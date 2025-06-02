@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Autori Opere</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f2f5;
+            color: #333;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #007bff;
+            margin-bottom: 20px;
+        }
+
+        .mode-selector {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .mode-selector label {
+            cursor: pointer;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .mode-selector input[type="radio"] {
+            display: none;
+        }
+        .mode-selector input[type="radio"]:checked + label {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            min-height: 180px; /* Adjust as needed */
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            min-height: 180px;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 8px;
+
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            min-height: 180px;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+        }
+
+        .flip-card-front {
+            background-color: #e9ecef;
+        }
+
+        .flip-card-back {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            transform: rotateY(180deg);
+        }
+        .flip-card-back.correct {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .flip-card-back.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+
+        #author-question {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .answer-options button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+
+        .answer-options button:hover {
+            background-color: #0056b3;
+        }
+        .answer-options button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        #text-answer-input {
+            width: calc(100% - 22px);
+            padding: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .action-buttons button {
+            padding: 12px 25px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.2s;
+        }
+
+        #submit-answer {
+            background-color: #28a745;
+            color: white;
+        }
+        #submit-answer:hover {
+            background-color: #1e7e34;
+        }
+        #submit-answer:disabled {
+            background-color: #94dca4;
+            cursor: not-allowed;
+        }
+
+
+        #next-question {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        #next-question:hover {
+            background-color: #e0a800;
+        }
+
+        #feedback {
+            margin-top: 15px;
+            font-size: 1.1em;
+            font-weight: bold;
+        }
+
+        #feedback-result {
+            font-size: 1.3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        #feedback-correct-answer {
+            font-size: 1.1em;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+         #score {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Quiz Autori și Opere</h1>
+
+        <div class="mode-selector">
+            <input type="radio" id="mode-choice" name="quiz-mode" value="multiple-choice" checked>
+            <label for="mode-choice">Variante Multiple</label>
+
+            <input type="radio" id="mode-text" name="quiz-mode" value="text-input">
+            <label for="mode-text">Scrie Răspunsul</label>
+        </div>
+
+        <div class="flip-card" id="flip-card">
+            <div class="flip-card-inner" id="flip-card-inner">
+                <div class="flip-card-front" id="flip-card-front">
+                    <p>Autor:</p>
+                    <p id="author-question">Nume Autor</p>
+                </div>
+                <div class="flip-card-back" id="flip-card-back">
+                    <p id="feedback-result"></p>
+                    <p id="feedback-correct-answer"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="multiple-choice-area">
+            <p>Alege opera corectă:</p>
+            <div class="answer-options" id="answer-options">
+                <!-- Options will be generated by JS -->
+            </div>
+        </div>
+
+        <div id="text-input-area" class="hidden">
+            <p>Scrie titlul operei (fără diacritice, nu contează majusculele):</p>
+            <input type="text" id="text-answer-input" placeholder="Titlul operei...">
+        </div>
+
+        <div class="action-buttons">
+            <button id="submit-answer">Verifică</button>
+            <button id="next-question" class="hidden">Următoarea Întrebare</button>
+        </div>
+
+        <div id="score">Scor: 0 / 0</div>
+        <p id="final-message" class="hidden" style="font-size: 1.5em; margin-top: 20px;"></p>
+
+    </div>
+
+    <script>
+        const data = [
+            { author: "Mihai Eminescu", work: "Floare Albastră" },
+            { author: "Liviu Rebreanu", work: "Ion" },
+            { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii" },
+            { author: "Mihail Sadoveanu", work: "Baltagul" },
+            { author: "Marin Preda", work: "Moromeții" },
+            { author: "G. Călinescu", work: "Enigma Otiliei" },
+            { author: "Ioan Slavici", work: "Moara cu noroc" },
+            { author: "Ion Luca Caragiale", work: "O scrisoare pierdută" },
+            { author: "Ion Creangă", work: "Povestea lui Harap-Alb" }, // Am pastrat o singura intrare pentru Harap-Alb
+            { author: "Ion Barbu", work: "Riga Crypto și Lapona Enigel" },
+            { author: "Tudor Arghezi", work: "Flori de mucigai" },
+            { author: "Camil Petrescu", work: "Ultima noapte de dragoste, întâia noapte de război" }
+        ];
+
+        let shuffledData = [];
+        let currentQuestionIndex = 0;
+        let currentMode = 'multiple-choice';
+        let score = 0;
+        let questionsAnswered = 0;
+        let submittedAnswer = false;
+
+        const authorQuestionEl = document.getElementById('author-question');
+        const answerOptionsEl = document.getElementById('answer-options');
+        const textAnswerInputEl = document.getElementById('text-answer-input');
+        const multipleChoiceAreaEl = document.getElementById('multiple-choice-area');
+        const textInputAreaEl = document.getElementById('text-input-area');
+
+        const flipCardEl = document.getElementById('flip-card');
+        const flipCardInnerEl = document.getElementById('flip-card-inner');
+        const flipCardBackEl = document.getElementById('flip-card-back');
+        const feedbackResultEl = document.getElementById('feedback-result');
+        const feedbackCorrectAnswerEl = document.getElementById('feedback-correct-answer');
+
+        const submitButton = document.getElementById('submit-answer');
+        const nextButton = document.getElementById('next-question');
+        const scoreEl = document.getElementById('score');
+        const finalMessageEl = document.getElementById('final-message');
+
+        const modeRadios = document.querySelectorAll('input[name="quiz-mode"]');
+
+        function normalizeString(str) {
+            if (!str) return "";
+            return str.toLowerCase()
+                      .normalize("NFD") // Normalize to decompose combined diacritical marks
+                      .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+                      .replace(/[^\w\s]/gi, '') // Remove punctuation
+                      .replace(/\s+/g, ' ') // Normalize whitespace
+                      .trim();
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function setupQuiz() {
+            shuffledData = [...data];
+            shuffleArray(shuffledData);
+            currentQuestionIndex = 0;
+            score = 0;
+            questionsAnswered = 0;
+            submittedAnswer = false;
+            finalMessageEl.classList.add('hidden');
+            nextButton.classList.add('hidden');
+            submitButton.classList.remove('hidden');
+            submitButton.disabled = false;
+            updateScoreDisplay();
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            submittedAnswer = false;
+            flipCardEl.classList.remove('flipped');
+            flipCardBackEl.className = 'flip-card-back'; // Reset back card style
+            feedbackResultEl.textContent = '';
+            feedbackCorrectAnswerEl.textContent = '';
+
+            if (currentQuestionIndex >= shuffledData.length) {
+                showFinalMessage();
+                return;
+            }
+
+            const currentPair = shuffledData[currentQuestionIndex];
+            authorQuestionEl.textContent = currentPair.author;
+
+            if (currentMode === 'multiple-choice') {
+                multipleChoiceAreaEl.classList.remove('hidden');
+                textInputAreaEl.classList.add('hidden');
+                answerOptionsEl.innerHTML = ''; // Clear previous options
+
+                const correctAnswer = currentPair.work;
+                let options = [correctAnswer];
+
+                // Get 3 wrong answers
+                const wrongAnswers = shuffledData
+                    .map(item => item.work)
+                    .filter(work => work !== correctAnswer);
+                shuffleArray(wrongAnswers);
+
+                for (let i = 0; options.length < 4 && i < wrongAnswers.length; i++) {
+                    if (!options.includes(wrongAnswers[i])) {
+                        options.push(wrongAnswers[i]);
+                    }
+                }
+                // If not enough unique wrong answers from data, add placeholders (less ideal)
+                 while (options.length < 4) {
+                    options.push(`Opțiune falsă ${options.length}`);
+                }
+
+
+                shuffleArray(options);
+
+                options.forEach(option => {
+                    const button = document.createElement('button');
+                    button.textContent = option;
+                    button.onclick = () => handleMultipleChoiceSelection(button, option === correctAnswer);
+                    answerOptionsEl.appendChild(button);
+                });
+                 submitButton.classList.add('hidden'); // Hide submit for MCQs, answer on click
+
+            } else { // text-input mode
+                multipleChoiceAreaEl.classList.add('hidden');
+                textInputAreaEl.classList.remove('hidden');
+                textAnswerInputEl.value = '';
+                textAnswerInputEl.disabled = false;
+                textAnswerInputEl.focus();
+                submitButton.classList.remove('hidden');
+                submitButton.disabled = false;
+            }
+            nextButton.classList.add('hidden');
+        }
+
+        function handleMultipleChoiceSelection(buttonEl, isCorrect) {
+            if (submittedAnswer) return;
+            submittedAnswer = true;
+
+            questionsAnswered++;
+            const currentPair = shuffledData[currentQuestionIndex];
+
+            // Disable all option buttons
+            Array.from(answerOptionsEl.children).forEach(btn => {
+                btn.disabled = true;
+                if (btn.textContent === currentPair.work) {
+                    btn.style.backgroundColor = '#28a745'; // Highlight correct
+                } else if (btn === buttonEl && !isCorrect) {
+                     btn.style.backgroundColor = '#dc3545'; // Highlight selected wrong
+                }
+            });
+
+
+            if (isCorrect) {
+                score++;
+                feedbackResultEl.textContent = "Corect!";
+                flipCardBackEl.classList.add('correct');
+            } else {
+                feedbackResultEl.textContent = "Greșit!";
+                flipCardBackEl.classList.add('incorrect');
+            }
+            feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentPair.work}`;
+            flipCardEl.classList.add('flipped');
+            updateScoreDisplay();
+            nextButton.classList.remove('hidden');
+            submitButton.classList.add('hidden');
+        }
+
+
+        function checkTextAnswer() {
+            if (submittedAnswer) return;
+            submittedAnswer = true;
+
+            questionsAnswered++;
+            const currentPair = shuffledData[currentQuestionIndex];
+            const userAnswer = normalizeString(textAnswerInputEl.value);
+            const correctAnswer = normalizeString(currentPair.work);
+
+            textAnswerInputEl.disabled = true;
+            submitButton.disabled = true;
+
+            if (userAnswer === correctAnswer) {
+                score++;
+                feedbackResultEl.textContent = "Corect!";
+                flipCardBackEl.classList.add('correct');
+            } else {
+                feedbackResultEl.textContent = "Greșit!";
+                flipCardBackEl.classList.add('incorrect');
+            }
+            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentPair.work}`;
+            flipCardEl.classList.add('flipped');
+            updateScoreDisplay();
+            nextButton.classList.remove('hidden');
+            submitButton.classList.add('hidden');
+        }
+
+        function updateScoreDisplay() {
+            scoreEl.textContent = `Scor: ${score} / ${questionsAnswered}`;
+        }
+
+        function showFinalMessage() {
+            flipCardEl.classList.add('hidden');
+            multipleChoiceAreaEl.classList.add('hidden');
+            textInputAreaEl.classList.add('hidden');
+            submitButton.classList.add('hidden');
+            nextButton.classList.add('hidden');
+            scoreEl.textContent = `Scor final: ${score} / ${shuffledData.length}`;
+            finalMessageEl.textContent = `Quiz terminat! Ai răspuns corect la ${score} din ${shuffledData.length} întrebări.`;
+            finalMessageEl.classList.remove('hidden');
+
+            // Option to restart
+            const restartButton = document.createElement('button');
+            restartButton.textContent = "Reîncepe Quiz";
+            restartButton.style.marginTop = "20px";
+            restartButton.style.padding = "10px 20px";
+            restartButton.style.backgroundColor = "#007bff";
+            restartButton.style.color = "white";
+            restartButton.style.border = "none";
+            restartButton.style.borderRadius = "5px";
+            restartButton.onclick = () => {
+                finalMessageEl.innerHTML = ''; // Clear message and button
+                flipCardEl.classList.remove('hidden');
+                setupQuiz();
+            };
+            finalMessageEl.appendChild(restartButton);
+
+        }
+
+        modeRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                currentMode = event.target.value;
+                // Reset current question to adapt to new mode, or just reload the UI
+                // For simplicity, we can just reload the current question with the new mode
+                // but this might feel like skipping if an answer was partially made.
+                // A better UX might be to finish the current question or restart.
+                // Let's restart the quiz for mode change for simplicity.
+                setupQuiz(); 
+            });
+        });
+
+        submitButton.addEventListener('click', () => {
+            if (currentMode === 'text-input') {
+                checkTextAnswer();
+            }
+            // For multiple choice, submission is handled by option click
+        });
+
+        nextButton.addEventListener('click', () => {
+            currentQuestionIndex++;
+            loadQuestion();
+        });
+
+        textAnswerInputEl.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && currentMode === 'text-input' && !submitButton.disabled) {
+                checkTextAnswer();
+            }
+        });
+
+        // Initialize
+        setupQuiz();
+    </script>
+
+</body>
+</html>
