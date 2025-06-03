@@ -47,12 +47,12 @@
             height: 100%;
             overflow: auto;
             background-color: rgba(0,0,0,0.5);
-            align-items: center; /* Added for vertical centering */
-            justify-content: center; /* Added for horizontal centering */
+            align-items: center; 
+            justify-content: center; 
         }
         .stats-modal-content {
             background-color: #fff;
-            margin: auto; /* Works with flex centering too */
+            margin: auto; 
             padding: 25px;
             border: 1px solid #888;
             width: 80%;
@@ -74,7 +74,7 @@
             margin-bottom: 8px;
             font-size: 1.1em;
         }
-        .stats-modal-content button { /* General button style in modal */
+        .stats-modal-content button { 
             display: block;
             margin: 20px auto 0;
             padding: 10px 15px;
@@ -82,14 +82,14 @@
             border-radius: 5px;
             cursor:pointer;
         }
-        .close-stats-button { /* Specific for close */
+        .close-stats-button { 
              background-color: #dc3545;
              color: white;
         }
-        #reset-stats-button { /* Specific for reset */
+        #reset-stats-button { 
             background-color: #ffc107;
             color: #212529;
-            margin-top:10px; /* Spacing from close */
+            margin-top:10px; 
         }
 
 
@@ -191,7 +191,6 @@
 
         .flip-card-front {
             background-color: #e9ecef;
-            /* Ensure text is visible for placeholder */
             color: #333; 
         }
         .flip-card-front p:first-child {
@@ -391,7 +390,7 @@
     </div>
 
     <script>
-        const initialData = [ // IMPORTANT: Ensure this array is correctly populated
+        const initialData = [ 
             { author: "Mihai Eminescu", work: "Floare Albastră", type: "Poezie romantică" },
             { author: "Liviu Rebreanu", work: "Ion", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
             { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii", type: "Poezie modernistă, expresionistă (interbelică)" },
@@ -468,9 +467,9 @@
                     stats = JSON.parse(savedStats);
                 } catch (e) {
                     console.error("Error parsing saved stats from localStorage. Resetting stats.", e);
-                    localStorage.removeItem('quizStats');
+                    localStorage.removeItem('quizStats'); // Clear corrupted data
                     stats = { totalQuestionsAnsweredTextMode: 0, totalCorrectTextMode: 0, totalIncorrectTextMode: 0, totalHintsUsed: 0 };
-                    saveStats(); 
+                    saveStats(); // Save the fresh stats object
                 }
             }
         }
@@ -480,7 +479,7 @@
         }
 
         function displayStats() {
-            if (!statsListEl || !statsModal) { // Guard clause
+            if (!statsListEl || !statsModal) { 
                 console.error("Stats elements not found in displayStats");
                 return;
             }
@@ -511,12 +510,10 @@
             submittedAnswer = false;
             finalMessageEl.classList.add('hidden');
             nextButton.classList.add('hidden');
-            // submitButton is handled per mode in loadQuestion or setupQuiz specific blocks
             flipCardEl.classList.remove('hidden');
             hintUsedThisTurn = false;
             hintCharsShown = 0;
             if(hintDisplayEl) hintDisplayEl.textContent = '';
-
 
             if (currentMode === 'multiple-choice') {
                 originalDataForMC = shuffleArray([...initialData]);
@@ -526,7 +523,7 @@
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
                 duolingoToggleBtn.classList.add('hidden');
-                submitButton.classList.add('hidden'); // Explicitly hide for MC
+                submitButton.classList.add('hidden'); 
             } else { 
                 quizPool = shuffleArray(initialData.map(item => ({
                     ...item,
@@ -538,7 +535,7 @@
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
                 duolingoToggleBtn.classList.remove('hidden');
-                submitButton.classList.remove('hidden'); // Explicitly show for Text
+                submitButton.classList.remove('hidden'); 
                 submitButton.disabled = false;
             }
             updateScoreDisplay();
@@ -556,16 +553,15 @@
             feedbackCorrectAnswerEl.textContent = '';
             feedbackWorkTypeEl.textContent = '';
 
-
             if (currentMode === 'multiple-choice') {
                 if (mcCurrentIndex >= originalDataForMC.length) {
                     showFinalMessage();
                     return;
                 }
                 currentQuestionData = originalDataForMC[mcCurrentIndex];
-                 if (!currentQuestionData) { // Important Check
+                 if (!currentQuestionData) { 
                     console.error("MC Mode: currentQuestionData is undefined at index " + mcCurrentIndex);
-                    showFinalMessage(); // Or handle error more gracefully
+                    showFinalMessage(); 
                     return;
                 }
                 authorQuestionEl.textContent = currentQuestionData.author;
@@ -586,7 +582,7 @@
                     button.onclick = () => handleMultipleChoiceSelection(button, option === correctAnswer);
                     answerOptionsEl.appendChild(button);
                 });
-                submitButton.classList.add('hidden'); // Ensure hidden for MC
+                submitButton.classList.add('hidden'); 
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
 
@@ -600,7 +596,7 @@
                     return;
                 }
                 currentQuestionData = quizPool[0];
-                if (!currentQuestionData) { // Important Check
+                if (!currentQuestionData) { 
                     console.error("Text Mode: currentQuestionData is undefined from quizPool[0]");
                     showFinalMessage();
                     return;
@@ -609,7 +605,7 @@
                 textAnswerInputEl.value = '';
                 textAnswerInputEl.disabled = false;
                 textAnswerInputEl.focus();
-                submitButton.classList.remove('hidden'); // Ensure shown for Text
+                submitButton.classList.remove('hidden'); 
                 submitButton.disabled = false;
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
@@ -633,9 +629,11 @@
             if (isCorrect) {
                 mcScore++;
                 feedbackResultEl.textContent = "Corect!";
+                flipCardBackEl.classList.remove('incorrect'); // Ensure only correct class
                 flipCardBackEl.classList.add('correct');
             } else {
                 feedbackResultEl.textContent = "Greșit!";
+                flipCardBackEl.classList.remove('correct'); // Ensure only incorrect class
                 flipCardBackEl.classList.add('incorrect');
             }
             feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentQuestionData.work}`;
@@ -654,14 +652,14 @@
             const correctAnswer = normalizeString(currentQuestionData.work);
 
             textAnswerInputEl.disabled = true;
-            // submitButton.disabled = true; // This is already done by hiding it later
             feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
 
             const itemInPool = quizPool[0]; 
 
             if (userAnswer === correctAnswer) {
                 feedbackResultEl.textContent = "Corect!";
-                flipCardBackEl.classList.add('correct');
+                flipCardBackEl.classList.remove('incorrect'); 
+                flipCardBackEl.classList.add('correct');    
                 stats.totalCorrectTextMode++;
 
                 if (!hintUsedThisTurn) { 
@@ -676,19 +674,20 @@
                     quizPool.push(processedItem); 
                 } else if (hintUsedThisTurn && userAnswer === correctAnswer) {
                     let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 2);
-                    if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; // Boundary
+                    if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; 
                     quizPool.splice(reinsertIndex, 0, processedItem);
                 }
                 else { 
                     let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 1);
                     if (quizPool.length > 2 && reinsertIndex < 2) reinsertIndex = 2;
-                    if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; // Boundary
+                    if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; 
                     quizPool.splice(reinsertIndex, 0, processedItem);
                 }
 
             } else { 
                 feedbackResultEl.textContent = "Greșit!";
-                flipCardBackEl.classList.add('incorrect');
+                flipCardBackEl.classList.remove('correct'); 
+                flipCardBackEl.classList.add('incorrect');  
                 stats.totalIncorrectTextMode++;
 
                 if (itemInPool.isMastered) { 
@@ -706,19 +705,19 @@
                 } else {
                     let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 3) + 1);
                     if (quizPool.length > 3 && reinsertIndex < 2) reinsertIndex = 2;
-                     if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; // Boundary
+                     if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; 
                     quizPool.splice(reinsertIndex, 0, incorrectItem);
                 }
             }
             masteredItemCount = quizPool.filter(item => item.isMastered).length; 
             saveStats(); 
 
-            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work} (Serie: ${itemInPool.correctStreak}${hintUsedThisTurn ? ", Indiciu folosit":""})`;
+            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work} (Serie: ${itemInPool.correctStreak}${hintUsedThisTurn && userAnswer === correctAnswer ? ", Indiciu folosit pentru răspuns corect": (hintUsedThisTurn && userAnswer !== correctAnswer ? ", Indiciu folosit" : "")})`;
             feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
             nextButton.classList.remove('hidden');
-            submitButton.classList.add('hidden'); // Hide submit after check
+            submitButton.classList.add('hidden'); 
         }
 
         function updateScoreDisplay() {
@@ -735,7 +734,7 @@
             textInputAreaEl.classList.add('hidden');
             submitButton.classList.add('hidden');
             nextButton.classList.add('hidden');
-            if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden'); // Check if exists
+            if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden'); 
 
             if (currentMode === 'multiple-choice') {
                 scoreEl.textContent = `Scor final: ${mcScore} / ${originalDataForMC.length}`;
@@ -763,7 +762,7 @@
                 finalMessageEl.innerHTML = '';
                 setupQuiz();
             };
-            if (finalMessageEl.children.length === 0) { // Prevent multiple restart buttons
+            if (finalMessageEl.children.length === 0) { 
                  finalMessageEl.appendChild(restartButton);
             }
         }
@@ -775,7 +774,7 @@
             });
         });
 
-        if(duolingoToggleBtn) { // Check if element exists before adding listener
+        if(duolingoToggleBtn) { 
             duolingoToggleBtn.addEventListener('click', () => {
                 duolingoModeActive = !duolingoModeActive;
                 duolingoToggleBtn.textContent = duolingoModeActive ? "Dezactivează Modul Repetiție" : "Activează Modul Repetiție";
@@ -803,9 +802,13 @@
         });
 
         document.addEventListener('keydown', function(event) {
+            // Doar daca modul text e activ, nu s-a submis raspunsul, avem o intrebare curenta SI focusul NU e pe input
             if (currentMode === 'text-input' && !submittedAnswer && currentQuestionData && event.key.toLowerCase() === 'h') {
+                if (document.activeElement === textAnswerInputEl) {
+                    return; // Permite scrierea lui 'h' in input
+                }
                 event.preventDefault(); 
-                if (!hintDisplayEl) return; // Guard clause
+                if (!hintDisplayEl) return; 
 
                 hintUsedThisTurn = true;
                 hintCharsShown++;
@@ -822,7 +825,7 @@
             }
         });
 
-        if (statsButton) { // Guard clauses for stats elements
+        if (statsButton) { 
             statsButton.addEventListener('click', displayStats);
         }
         if (closeStatsModalButton) {
