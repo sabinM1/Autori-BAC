@@ -35,7 +35,7 @@
         }
 
         .mode-selector {
-            margin-bottom: 15px; /* Reduced margin */
+            margin-bottom: 15px;
             display: flex;
             justify-content: center;
             gap: 15px;
@@ -56,7 +56,7 @@
             border-color: #007bff;
         }
 
-        #duolingo-mode-toggle { /* Style for Duolingo toggle */
+        #duolingo-mode-toggle {
             margin-bottom: 20px;
             padding: 8px 15px;
             border: 1px solid #6c757d;
@@ -288,7 +288,7 @@
     </div>
 
     <script>
-        const data = [
+        const initialData = [ // Renamed from 'data' to avoid confusion
             { author: "Mihai Eminescu", work: "Floare Albastră", type: "Poezie romantică" },
             { author: "Liviu Rebreanu", work: "Ion", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
             { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii", type: "Poezie modernistă, expresionistă (interbelică)" },
@@ -307,27 +307,28 @@
             { author: "Ion Pillat", work: "Aci sosi pe vremuri", type: "Poezie tradiționalistă interbelică" }
         ];
 
-        let originalDataForMC = []; // For multiple choice mode, to keep it separate
-        let activeQuizItems = []; // For text input mastery mode
-        let currentQuestionData = null; // Holds the current item for text input mode
+        const MASTERY_THRESHOLD = 2; // Need 2 consecutive correct answers to be "mastered"
+
+        let originalDataForMC = [];
+        let quizPool = []; // Pool of items for text input mode, each with mastery info
+        let currentQuestionData = null;
 
         let currentMode = 'multiple-choice';
-        let masteredCount = 0; // For text input mastery
-        let mcScore = 0; // Score for multiple choice
-        let mcQuestionsAnswered = 0; // Questions answered in MC mode
+        let masteredItemCount = 0; // How many unique items have reached mastery threshold
+        let mcScore = 0;
+        let mcQuestionsAnswered = 0;
         let mcCurrentIndex = 0;
-
 
         let submittedAnswer = false;
         let duolingoModeActive = false;
 
+        // DOM Elements
         const authorQuestionEl = document.getElementById('author-question');
         const answerOptionsEl = document.getElementById('answer-options');
         const textAnswerInputEl = document.getElementById('text-answer-input');
         const multipleChoiceAreaEl = document.getElementById('multiple-choice-area');
         const textInputAreaEl = document.getElementById('text-input-area');
         const duolingoToggleBtn = document.getElementById('duolingo-mode-toggle');
-
         const flipCardEl = document.getElementById('flip-card');
         const flipCardInnerEl = document.getElementById('flip-card-inner');
         const flipCardBackEl = document.getElementById('flip-card-back');
@@ -335,7 +336,6 @@
         const feedbackResultEl = document.getElementById('feedback-result');
         const feedbackCorrectAnswerEl = document.getElementById('feedback-correct-answer');
         const feedbackWorkTypeEl = document.getElementById('feedback-work-type');
-
         const submitButton = document.getElementById('submit-answer');
         const nextButton = document.getElementById('next-question');
         const scoreEl = document.getElementById('score');
@@ -362,26 +362,31 @@
             nextButton.classList.add('hidden');
             submitButton.classList.remove('hidden');
             submitButton.disabled = false;
-            flipCardEl.classList.remove('hidden'); // Ensure card is visible
+            flipCardEl.classList.remove('hidden');
 
             if (currentMode === 'multiple-choice') {
-                originalDataForMC = shuffleArray([...data]);
+                originalDataForMC = shuffleArray([...initialData]);
                 mcCurrentIndex = 0;
                 mcScore = 0;
                 mcQuestionsAnswered = 0;
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
                 duolingoToggleBtn.classList.add('hidden');
-                submitButton.classList.add('hidden'); // Submit is via option click
+                submitButton.classList.add('hidden');
             } else { // text-input mode
-                activeQuizItems = shuffleArray([...data]);
-                masteredCount = 0;
+                // Initialize quizPool with mastery info for each item
+                quizPool = shuffleArray(initialData.map(item => ({
+                    ...item,
+                    correctStreak: 0, // How many times answered correctly in a row
+                    isMastered: false  // True if correctStreak >= MASTERY_THRESHOLD
+                })));
+                masteredItemCount = 0;
                 currentQuestionData = null;
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
                 duolingoToggleBtn.classList.remove('hidden');
                 submitButton.classList.remove('hidden');
-                 submitButton.disabled = false;
+                submitButton.disabled = false;
             }
             updateScoreDisplay();
             loadQuestion();
@@ -407,12 +412,13 @@
                 answerOptionsEl.innerHTML = '';
                 const correctAnswer = currentQuestionData.work;
                 let options = [correctAnswer];
-                const wrongAnswers = data.map(item => item.work).filter(work => work !== correctAnswer);
-                shuffleArray(wrongAnswers);
-                for (let i = 0; options.length < 4 && i < wrongAnswers.length; i++) {
-                    if (!options.includes(wrongAnswers[i])) options.push(wrongAnswers[i]);
+                const wrongAnswers = initialData.map(item => item.work).filter(work => work !== correctAnswer);
+                let tempWrong = shuffleArray(wrongAnswers);
+                for (let i = 0; options.length < 4 && i < tempWrong.length; i++) {
+                    if (!options.includes(tempWrong[i])) options.push(tempWrong[i]);
                 }
                 while (options.length < 4) options.push(`Opțiune falsă ${options.length}`);
+
                 shuffleArray(options).forEach(option => {
                     const button = document.createElement('button');
                     button.textContent = option;
@@ -423,11 +429,22 @@
                 submitButton.classList.add('hidden');
 
             } else { // text-input mode
-                if (activeQuizItems.length === 0) {
+                if (masteredItemCount === initialData.length && quizPool.every(item => item.isMastered)) {
+                    // Double check: if all are mastered, end.
+                    // This condition might be hit if the last item mastered also empties a specific view of the pool.
                     showFinalMessage();
                     return;
                 }
-                currentQuestionData = activeQuizItems[0]; // Always pick the first from the active pool
+
+                // Select the next question from the quizPool.
+                // Prioritize items not yet mastered or with lower correctStreak.
+                // For now, simple: pick the first one. More advanced logic could be added.
+                if (quizPool.length === 0) { // Should not happen if masteredItemCount isn't full
+                    console.error("Quiz pool empty but not all items mastered. This shouldn't happen.");
+                    showFinalMessage(); // Fallback
+                    return;
+                }
+                currentQuestionData = quizPool[0];
                 authorQuestionEl.textContent = currentQuestionData.author;
                 textAnswerInputEl.value = '';
                 textAnswerInputEl.disabled = false;
@@ -442,7 +459,6 @@
             if (submittedAnswer) return;
             submittedAnswer = true;
             mcQuestionsAnswered++;
-
             feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
 
             Array.from(answerOptionsEl.children).forEach(btn => {
@@ -478,35 +494,65 @@
             submitButton.disabled = true;
             feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
 
+            const itemInPool = quizPool[0]; // currentQuestionData is a reference to this
+
             if (userAnswer === correctAnswer) {
-                masteredCount++;
                 feedbackResultEl.textContent = "Corect!";
                 flipCardBackEl.classList.add('correct');
-                // Remove from active list
-                activeQuizItems.shift(); // The current question was activeQuizItems[0]
-            } else {
+                itemInPool.correctStreak++;
+
+                if (!itemInPool.isMastered && itemInPool.correctStreak >= MASTERY_THRESHOLD) {
+                    itemInPool.isMastered = true;
+                    masteredItemCount++;
+                }
+
+                // Move the correctly answered item.
+                // If mastered, move further back. If not yet mastered, keep it relatively sooner.
+                const correctlyAnsweredItem = quizPool.shift(); // Remove from front
+                if (itemInPool.isMastered) {
+                    // For mastered items, put them at the end for less frequent review
+                    quizPool.push(correctlyAnsweredItem);
+                } else {
+                    // Not yet mastered, reinsert a bit further down, but not at the very end
+                    // This ensures it's seen again relatively soon to reach mastery.
+                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 1);
+                     // Ensure it's not immediately repeated unless it's one of the few left
+                    if (quizPool.length > 2 && reinsertIndex < 2) reinsertIndex = 2;
+                    quizPool.splice(reinsertIndex, 0, correctlyAnsweredItem);
+                }
+
+            } else { // Incorrect answer
                 feedbackResultEl.textContent = "Greșit!";
                 flipCardBackEl.classList.add('incorrect');
-                // Handle incorrect answer based on Duolingo mode
-                const incorrectItem = activeQuizItems.shift(); // Remove from front
+
+                // If it was previously mastered, decrement mastered count and mark as not mastered
+                if (itemInPool.isMastered) {
+                    itemInPool.isMastered = false;
+                    masteredItemCount--;
+                }
+                itemInPool.correctStreak = 0; // Reset streak
+
+                const incorrectItem = quizPool.shift(); // Remove from front
                 if (duolingoModeActive) {
-                    // Re-insert not immediately at the front, but soon. e.g. 2nd or 3rd position if list is long enough.
-                    // Or, for simplicity, a bit further down if list is short
+                    // Re-insert sooner for Duolingo mode
                     let reinsertAtIndex = 1;
-                    if (activeQuizItems.length > 2) {
-                         reinsertAtIndex = Math.floor(Math.random() * 2) + 1; // 1 or 2
-                    } else if (activeQuizItems.length > 0) {
-                        reinsertAtIndex = 1;
-                    } else {
-                        reinsertAtIndex = 0; // If it's the only one left
-                    }
-                    activeQuizItems.splice(reinsertAtIndex, 0, incorrectItem);
+                    if (quizPool.length > 2) reinsertAtIndex = Math.floor(Math.random() * 2) + 1;
+                    else if (quizPool.length > 0) reinsertAtIndex = 1;
+                    else reinsertAtIndex = 0;
+                    quizPool.splice(reinsertAtIndex, 0, incorrectItem);
                 } else {
-                    // Mode off, move to end
-                    activeQuizItems.push(incorrectItem);
+                    // Mode off, reinsert a bit further down, but not necessarily at the very end,
+                    // as it needs to be relearned.
+                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 3) + 1);
+                    if (quizPool.length > 3 && reinsertIndex < 2) reinsertIndex = 2;
+                    quizPool.splice(reinsertIndex, 0, incorrectItem);
                 }
             }
-            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work}`;
+            // Recalculate masteredItemCount just in case of edge cases with penalization
+            masteredItemCount = quizPool.filter(item => item.isMastered).length;
+
+
+            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work} (Serie corectă: ${itemInPool.correctStreak})`;
             feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
@@ -518,7 +564,7 @@
             if (currentMode === 'multiple-choice') {
                 scoreEl.textContent = `Scor: ${mcScore} / ${mcQuestionsAnswered}`;
             } else {
-                scoreEl.textContent = `Opere stăpânite: ${masteredCount} / ${data.length}`;
+                scoreEl.textContent = `Opere stăpânite: ${masteredItemCount} / ${initialData.length}`;
             }
         }
 
@@ -530,19 +576,26 @@
             nextButton.classList.add('hidden');
             duolingoToggleBtn.classList.add('hidden');
 
-
             if (currentMode === 'multiple-choice') {
                 scoreEl.textContent = `Scor final: ${mcScore} / ${originalDataForMC.length}`;
                 finalMessageEl.textContent = `Quiz (Variante Multiple) terminat! Ai răspuns corect la ${mcScore} din ${originalDataForMC.length} întrebări.`;
             } else {
-                scoreEl.textContent = `Toate ${data.length} operele stăpânite!`;
-                finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${data.length} opere!`;
+                if (masteredItemCount === initialData.length) {
+                     scoreEl.textContent = `Toate ${initialData.length} operele stăpânite!`;
+                     finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${initialData.length} opere!`;
+                } else {
+                    // This case should ideally not be reached if logic is sound,
+                    // but as a fallback:
+                    scoreEl.textContent = `Quiz terminat! Opere stăpânite: ${masteredItemCount} / ${initialData.length}`;
+                    finalMessageEl.textContent = `Sesiune încheiată. Ai stăpânit ${masteredItemCount} din ${initialData.length} opere. Continuă să exersezi!`;
+                }
             }
             finalMessageEl.classList.remove('hidden');
 
             const restartButton = document.createElement('button');
             restartButton.textContent = "Reîncepe Quiz";
             restartButton.style.marginTop = "20px";
+            // ... (rest of button styling and onclick handler)
             restartButton.style.padding = "10px 20px";
             restartButton.style.backgroundColor = "#007bff";
             restartButton.style.color = "white";
@@ -578,7 +631,6 @@
             if (currentMode === 'multiple-choice') {
                  mcCurrentIndex++;
             }
-            // For text mode, loadQuestion will pick from activeQuizItems
             loadQuestion();
         });
 
@@ -588,7 +640,6 @@
             }
         });
 
-        // Initialize
         setupQuiz();
     </script>
 
