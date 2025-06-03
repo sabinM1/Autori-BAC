@@ -35,7 +35,7 @@
         }
 
         .mode-selector {
-            margin-bottom: 25px;
+            margin-bottom: 15px; /* Reduced margin */
             display: flex;
             justify-content: center;
             gap: 15px;
@@ -56,10 +56,27 @@
             border-color: #007bff;
         }
 
+        #duolingo-mode-toggle { /* Style for Duolingo toggle */
+            margin-bottom: 20px;
+            padding: 8px 15px;
+            border: 1px solid #6c757d;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f8f9fa;
+            color: #212529;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        #duolingo-mode-toggle.active {
+            background-color: #17a2b8;
+            color: white;
+            border-color: #17a2b8;
+        }
+
+
         .flip-card {
             background-color: transparent;
             width: 100%;
-            min-height: 220px; /* Increased height for author name on back */
+            min-height: 220px;
             perspective: 1000px;
             margin-bottom: 20px;
         }
@@ -68,7 +85,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 220px; /* Increased height */
+            min-height: 220px;
             text-align: center;
             transition: transform 0.6s;
             transform-style: preserve-3d;
@@ -83,7 +100,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            min-height: 220px; /* Increased height */
+            min-height: 220px;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             display: flex;
@@ -132,17 +149,17 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            transition: background-color 0.2s, opacity 0.4s ease-out; /* Added opacity transition */
+            transition: background-color 0.2s, opacity 0.4s ease-out;
         }
-        .answer-options button.fade-out { /* New class for fading out */
+        .answer-options button.fade-out {
             opacity: 0;
-            pointer-events: none; /* Prevent interaction after fade */
+            pointer-events: none;
         }
 
         .answer-options button:hover {
             background-color: #0056b3;
         }
-        .answer-options button:disabled:not(.fade-out) { /* Ensure disabled style doesn't conflict with fade */
+        .answer-options button:disabled:not(.fade-out) {
             background-color: #ccc;
             cursor: not-allowed;
         }
@@ -187,10 +204,10 @@
             background-color: #e0a800;
         }
 
-        #feedback-author-name-back { /* Style for author name on back */
+        #feedback-author-name-back {
             font-size: 1.1em;
             font-weight: bold;
-            color: #495057; /* Slightly different color */
+            color: #495057;
             margin-bottom: 8px;
         }
         #feedback-result {
@@ -231,6 +248,8 @@
             <label for="mode-text">Scrie Răspunsul</label>
         </div>
 
+        <button id="duolingo-mode-toggle" class="hidden">Activează Modul Repetiție</button>
+
         <div class="flip-card" id="flip-card">
             <div class="flip-card-inner" id="flip-card-inner">
                 <div class="flip-card-front" id="flip-card-front">
@@ -238,7 +257,7 @@
                     <p id="author-question">Nume Autor</p>
                 </div>
                 <div class="flip-card-back" id="flip-card-back">
-                    <p id="feedback-author-name-back"></p> <!-- Author name on back -->
+                    <p id="feedback-author-name-back"></p>
                     <p id="feedback-result"></p>
                     <p id="feedback-correct-answer"></p>
                     <p id="feedback-work-type"></p>
@@ -263,7 +282,7 @@
             <button id="next-question" class="hidden">Următoarea Întrebare</button>
         </div>
 
-        <div id="score">Scor: 0 / 0</div>
+        <div id="score">Opere stăpânite: 0 / 0</div>
         <p id="final-message" class="hidden" style="font-size: 1.5em; margin-top: 20px;"></p>
 
     </div>
@@ -288,23 +307,31 @@
             { author: "Ion Pillat", work: "Aci sosi pe vremuri", type: "Poezie tradiționalistă interbelică" }
         ];
 
-        let shuffledData = [];
-        let currentQuestionIndex = 0;
+        let originalDataForMC = []; // For multiple choice mode, to keep it separate
+        let activeQuizItems = []; // For text input mastery mode
+        let currentQuestionData = null; // Holds the current item for text input mode
+
         let currentMode = 'multiple-choice';
-        let score = 0;
-        let questionsAnswered = 0;
+        let masteredCount = 0; // For text input mastery
+        let mcScore = 0; // Score for multiple choice
+        let mcQuestionsAnswered = 0; // Questions answered in MC mode
+        let mcCurrentIndex = 0;
+
+
         let submittedAnswer = false;
+        let duolingoModeActive = false;
 
         const authorQuestionEl = document.getElementById('author-question');
         const answerOptionsEl = document.getElementById('answer-options');
         const textAnswerInputEl = document.getElementById('text-answer-input');
         const multipleChoiceAreaEl = document.getElementById('multiple-choice-area');
         const textInputAreaEl = document.getElementById('text-input-area');
+        const duolingoToggleBtn = document.getElementById('duolingo-mode-toggle');
 
         const flipCardEl = document.getElementById('flip-card');
         const flipCardInnerEl = document.getElementById('flip-card-inner');
         const flipCardBackEl = document.getElementById('flip-card-back');
-        const feedbackAuthorNameBackEl = document.getElementById('feedback-author-name-back'); // New element for author on back
+        const feedbackAuthorNameBackEl = document.getElementById('feedback-author-name-back');
         const feedbackResultEl = document.getElementById('feedback-result');
         const feedbackCorrectAnswerEl = document.getElementById('feedback-correct-answer');
         const feedbackWorkTypeEl = document.getElementById('feedback-work-type');
@@ -313,37 +340,49 @@
         const nextButton = document.getElementById('next-question');
         const scoreEl = document.getElementById('score');
         const finalMessageEl = document.getElementById('final-message');
-
         const modeRadios = document.querySelectorAll('input[name="quiz-mode"]');
 
         function normalizeString(str) {
             if (!str) return "";
-            return str.toLowerCase()
-                      .normalize("NFD")
-                      .replace(/[\u0300-\u036f]/g, "")
-                      .replace(/[^\w\s]/gi, '')
-                      .replace(/\s+/g, ' ')
-                      .trim();
+            return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/gi, '').replace(/\s+/g, ' ').trim();
         }
 
         function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
+            let newArray = [...array];
+            for (let i = newArray.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
             }
+            return newArray;
         }
 
         function setupQuiz() {
-            shuffledData = [...data];
-            shuffleArray(shuffledData);
-            currentQuestionIndex = 0;
-            score = 0;
-            questionsAnswered = 0;
             submittedAnswer = false;
             finalMessageEl.classList.add('hidden');
             nextButton.classList.add('hidden');
             submitButton.classList.remove('hidden');
             submitButton.disabled = false;
+            flipCardEl.classList.remove('hidden'); // Ensure card is visible
+
+            if (currentMode === 'multiple-choice') {
+                originalDataForMC = shuffleArray([...data]);
+                mcCurrentIndex = 0;
+                mcScore = 0;
+                mcQuestionsAnswered = 0;
+                multipleChoiceAreaEl.classList.remove('hidden');
+                textInputAreaEl.classList.add('hidden');
+                duolingoToggleBtn.classList.add('hidden');
+                submitButton.classList.add('hidden'); // Submit is via option click
+            } else { // text-input mode
+                activeQuizItems = shuffleArray([...data]);
+                masteredCount = 0;
+                currentQuestionData = null;
+                multipleChoiceAreaEl.classList.add('hidden');
+                textInputAreaEl.classList.remove('hidden');
+                duolingoToggleBtn.classList.remove('hidden');
+                submitButton.classList.remove('hidden');
+                 submitButton.disabled = false;
+            }
             updateScoreDisplay();
             loadQuestion();
         }
@@ -352,56 +391,44 @@
             submittedAnswer = false;
             flipCardEl.classList.remove('flipped');
             flipCardBackEl.className = 'flip-card-back';
-            feedbackAuthorNameBackEl.textContent = ''; // Clear author name on back
+            feedbackAuthorNameBackEl.textContent = '';
             feedbackResultEl.textContent = '';
             feedbackCorrectAnswerEl.textContent = '';
             feedbackWorkTypeEl.textContent = '';
 
-            if (currentQuestionIndex >= shuffledData.length) {
-                showFinalMessage();
-                return;
-            }
-
-            const currentPair = shuffledData[currentQuestionIndex];
-            authorQuestionEl.textContent = currentPair.author;
-
             if (currentMode === 'multiple-choice') {
-                multipleChoiceAreaEl.classList.remove('hidden');
-                textInputAreaEl.classList.add('hidden');
+                if (mcCurrentIndex >= originalDataForMC.length) {
+                    showFinalMessage();
+                    return;
+                }
+                currentQuestionData = originalDataForMC[mcCurrentIndex];
+                authorQuestionEl.textContent = currentQuestionData.author;
+
                 answerOptionsEl.innerHTML = '';
-
-                const correctAnswer = currentPair.work;
+                const correctAnswer = currentQuestionData.work;
                 let options = [correctAnswer];
-
-                const wrongAnswers = shuffledData
-                    .map(item => item.work)
-                    .filter(work => work !== correctAnswer);
+                const wrongAnswers = data.map(item => item.work).filter(work => work !== correctAnswer);
                 shuffleArray(wrongAnswers);
-
                 for (let i = 0; options.length < 4 && i < wrongAnswers.length; i++) {
-                    if (!options.includes(wrongAnswers[i])) {
-                        options.push(wrongAnswers[i]);
-                    }
+                    if (!options.includes(wrongAnswers[i])) options.push(wrongAnswers[i]);
                 }
-                 while (options.length < 4) {
-                    options.push(`Opțiune falsă ${options.length}`);
-                }
-
-                shuffleArray(options);
-
-                options.forEach(option => {
+                while (options.length < 4) options.push(`Opțiune falsă ${options.length}`);
+                shuffleArray(options).forEach(option => {
                     const button = document.createElement('button');
                     button.textContent = option;
-                    // Remove fade-out class if it was somehow stuck (though innerHTML='' should handle this)
                     button.classList.remove('fade-out');
                     button.onclick = () => handleMultipleChoiceSelection(button, option === correctAnswer);
                     answerOptionsEl.appendChild(button);
                 });
-                 submitButton.classList.add('hidden');
+                submitButton.classList.add('hidden');
 
-            } else {
-                multipleChoiceAreaEl.classList.add('hidden');
-                textInputAreaEl.classList.remove('hidden');
+            } else { // text-input mode
+                if (activeQuizItems.length === 0) {
+                    showFinalMessage();
+                    return;
+                }
+                currentQuestionData = activeQuizItems[0]; // Always pick the first from the active pool
+                authorQuestionEl.textContent = currentQuestionData.author;
                 textAnswerInputEl.value = '';
                 textAnswerInputEl.disabled = false;
                 textAnswerInputEl.focus();
@@ -414,66 +441,73 @@
         function handleMultipleChoiceSelection(buttonEl, isCorrect) {
             if (submittedAnswer) return;
             submittedAnswer = true;
+            mcQuestionsAnswered++;
 
-            questionsAnswered++;
-            const currentPair = shuffledData[currentQuestionIndex];
-
-            feedbackAuthorNameBackEl.textContent = `Autor: ${currentPair.author}`; // Show author on back
+            feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
 
             Array.from(answerOptionsEl.children).forEach(btn => {
                 btn.disabled = true;
-                if (btn.textContent === currentPair.work) {
-                    btn.style.backgroundColor = '#28a745';
-                } else if (btn === buttonEl && !isCorrect) {
-                     btn.style.backgroundColor = '#dc3545';
-                }
-                // Add fade-out effect after a short delay
-                setTimeout(() => {
-                    btn.classList.add('fade-out');
-                }, 300); // 300ms delay before starting fade
+                if (btn.textContent === currentQuestionData.work) btn.style.backgroundColor = '#28a745';
+                else if (btn === buttonEl && !isCorrect) btn.style.backgroundColor = '#dc3545';
+                setTimeout(() => btn.classList.add('fade-out'), 300);
             });
 
             if (isCorrect) {
-                score++;
+                mcScore++;
                 feedbackResultEl.textContent = "Corect!";
                 flipCardBackEl.classList.add('correct');
             } else {
                 feedbackResultEl.textContent = "Greșit!";
                 flipCardBackEl.classList.add('incorrect');
             }
-            feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentPair.work}`;
-            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentPair.type}`;
+            feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentQuestionData.work}`;
+            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
             nextButton.classList.remove('hidden');
-            submitButton.classList.add('hidden');
         }
-
 
         function checkTextAnswer() {
             if (submittedAnswer) return;
             submittedAnswer = true;
 
-            questionsAnswered++;
-            const currentPair = shuffledData[currentQuestionIndex];
             const userAnswer = normalizeString(textAnswerInputEl.value);
-            const correctAnswer = normalizeString(currentPair.work);
+            const correctAnswer = normalizeString(currentQuestionData.work);
 
             textAnswerInputEl.disabled = true;
             submitButton.disabled = true;
-
-            feedbackAuthorNameBackEl.textContent = `Autor: ${currentPair.author}`; // Show author on back
+            feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
 
             if (userAnswer === correctAnswer) {
-                score++;
+                masteredCount++;
                 feedbackResultEl.textContent = "Corect!";
                 flipCardBackEl.classList.add('correct');
+                // Remove from active list
+                activeQuizItems.shift(); // The current question was activeQuizItems[0]
             } else {
                 feedbackResultEl.textContent = "Greșit!";
                 flipCardBackEl.classList.add('incorrect');
+                // Handle incorrect answer based on Duolingo mode
+                const incorrectItem = activeQuizItems.shift(); // Remove from front
+                if (duolingoModeActive) {
+                    // Re-insert not immediately at the front, but soon. e.g. 2nd or 3rd position if list is long enough.
+                    // Or, for simplicity, a bit further down if list is short
+                    let reinsertAtIndex = 1;
+                    if (activeQuizItems.length > 2) {
+                         reinsertAtIndex = Math.floor(Math.random() * 2) + 1; // 1 or 2
+                    } else if (activeQuizItems.length > 0) {
+                        reinsertAtIndex = 1;
+                    } else {
+                        reinsertAtIndex = 0; // If it's the only one left
+                    }
+                    activeQuizItems.splice(reinsertAtIndex, 0, incorrectItem);
+                } else {
+                    // Mode off, move to end
+                    activeQuizItems.push(incorrectItem);
+                }
             }
-            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentPair.work}`;
-            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentPair.type}`;
+            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work}`;
+            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
             nextButton.classList.remove('hidden');
@@ -481,7 +515,11 @@
         }
 
         function updateScoreDisplay() {
-            scoreEl.textContent = `Scor: ${score} / ${questionsAnswered}`;
+            if (currentMode === 'multiple-choice') {
+                scoreEl.textContent = `Scor: ${mcScore} / ${mcQuestionsAnswered}`;
+            } else {
+                scoreEl.textContent = `Opere stăpânite: ${masteredCount} / ${data.length}`;
+            }
         }
 
         function showFinalMessage() {
@@ -490,8 +528,16 @@
             textInputAreaEl.classList.add('hidden');
             submitButton.classList.add('hidden');
             nextButton.classList.add('hidden');
-            scoreEl.textContent = `Scor final: ${score} / ${shuffledData.length}`;
-            finalMessageEl.textContent = `Quiz terminat! Ai răspuns corect la ${score} din ${shuffledData.length} întrebări.`;
+            duolingoToggleBtn.classList.add('hidden');
+
+
+            if (currentMode === 'multiple-choice') {
+                scoreEl.textContent = `Scor final: ${mcScore} / ${originalDataForMC.length}`;
+                finalMessageEl.textContent = `Quiz (Variante Multiple) terminat! Ai răspuns corect la ${mcScore} din ${originalDataForMC.length} întrebări.`;
+            } else {
+                scoreEl.textContent = `Toate ${data.length} operele stăpânite!`;
+                finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${data.length} opere!`;
+            }
             finalMessageEl.classList.remove('hidden');
 
             const restartButton = document.createElement('button');
@@ -504,7 +550,6 @@
             restartButton.style.borderRadius = "5px";
             restartButton.onclick = () => {
                 finalMessageEl.innerHTML = '';
-                flipCardEl.classList.remove('hidden');
                 setupQuiz();
             };
             finalMessageEl.appendChild(restartButton);
@@ -517,6 +562,12 @@
             });
         });
 
+        duolingoToggleBtn.addEventListener('click', () => {
+            duolingoModeActive = !duolingoModeActive;
+            duolingoToggleBtn.textContent = duolingoModeActive ? "Dezactivează Modul Repetiție" : "Activează Modul Repetiție";
+            duolingoToggleBtn.classList.toggle('active', duolingoModeActive);
+        });
+
         submitButton.addEventListener('click', () => {
             if (currentMode === 'text-input') {
                 checkTextAnswer();
@@ -524,7 +575,10 @@
         });
 
         nextButton.addEventListener('click', () => {
-            currentQuestionIndex++;
+            if (currentMode === 'multiple-choice') {
+                 mcCurrentIndex++;
+            }
+            // For text mode, loadQuestion will pick from activeQuizItems
             loadQuestion();
         });
 
@@ -534,6 +588,7 @@
             }
         });
 
+        // Initialize
         setupQuiz();
     </script>
 
