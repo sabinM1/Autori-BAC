@@ -17,7 +17,84 @@
             color: #333;
             padding: 20px;
             box-sizing: border-box;
+            position: relative; /* For stats button positioning */
         }
+
+        #stats-button {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 8px 12px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            z-index: 100;
+        }
+        #stats-button:hover {
+            background-color: #5a6268;
+        }
+
+        .stats-modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+        }
+        .stats-modal-content {
+            background-color: #fff;
+            margin: auto;
+            padding: 25px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 450px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            text-align: left;
+        }
+        .stats-modal-content h2 {
+            text-align: center;
+            color: #007bff;
+            margin-top: 0;
+        }
+        .stats-modal-content ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .stats-modal-content ul li {
+            margin-bottom: 8px;
+            font-size: 1.1em;
+        }
+        .stats-modal-content button {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 15px;
+        }
+        .close-stats-button {
+             background-color: #dc3545;
+             color: white;
+             border: none;
+             border-radius: 5px;
+             cursor: pointer;
+        }
+        #reset-stats-button {
+            background-color: #ffc107;
+            color: #212529;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top:10px;
+        }
+
 
         .container {
             background-color: #fff;
@@ -27,6 +104,7 @@
             width: 100%;
             max-width: 600px;
             text-align: center;
+            margin-top: 50px; /* Make space for stats button */
         }
 
         h1 {
@@ -168,11 +246,19 @@
         #text-answer-input {
             width: calc(100% - 22px);
             padding: 12px;
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Adjusted margin */
             border: 1px solid #ccc;
             border-radius: 5px;
             font-size: 1em;
         }
+        #hint-display { /* Style for hint */
+            min-height: 20px; /* Ensure space even when empty */
+            margin-bottom: 15px;
+            font-style: italic;
+            color: #007bff;
+            font-size: 0.9em;
+        }
+
 
         .action-buttons button {
             padding: 12px 25px;
@@ -236,6 +322,18 @@
     </style>
 </head>
 <body>
+    <button id="stats-button">Statistici</button>
+
+    <div class="stats-modal" id="stats-modal">
+        <div class="stats-modal-content">
+            <h2>Statistici Quiz</h2>
+            <ul id="stats-list">
+                <!-- Stats will be populated by JS -->
+            </ul>
+            <button id="reset-stats-button">Resetează Statisticile</button>
+            <button class="close-stats-button" id="close-stats-modal">Închide</button>
+        </div>
+    </div>
 
     <div class="container">
         <h1>Quiz Autori și Opere</h1>
@@ -275,6 +373,7 @@
         <div id="text-input-area" class="hidden">
             <p>Scrie titlul operei (fără diacritice, nu contează majusculele):</p>
             <input type="text" id="text-answer-input" placeholder="Titlul operei...">
+            <div id="hint-display"></div> <!-- Hint display area -->
         </div>
 
         <div class="action-buttons">
@@ -288,7 +387,8 @@
     </div>
 
     <script>
-        const initialData = [ // Renamed from 'data' to avoid confusion
+        const initialData = [
+            // ... (datele tale ca înainte)
             { author: "Mihai Eminescu", work: "Floare Albastră", type: "Poezie romantică" },
             { author: "Liviu Rebreanu", work: "Ion", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
             { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii", type: "Poezie modernistă, expresionistă (interbelică)" },
@@ -307,40 +407,63 @@
             { author: "Ion Pillat", work: "Aci sosi pe vremuri", type: "Poezie tradiționalistă interbelică" }
         ];
 
-        const MASTERY_THRESHOLD = 2; // Need 2 consecutive correct answers to be "mastered"
+        const MASTERY_THRESHOLD = 2;
 
         let originalDataForMC = [];
-        let quizPool = []; // Pool of items for text input mode, each with mastery info
+        let quizPool = [];
         let currentQuestionData = null;
 
         let currentMode = 'multiple-choice';
-        let masteredItemCount = 0; // How many unique items have reached mastery threshold
+        let masteredItemCount = 0;
         let mcScore = 0;
         let mcQuestionsAnswered = 0;
         let mcCurrentIndex = 0;
 
         let submittedAnswer = false;
         let duolingoModeActive = false;
+        let hintUsedThisTurn = false;
+        let hintCharsShown = 0;
 
-        // DOM Elements
-        const authorQuestionEl = document.getElementById('author-question');
-        const answerOptionsEl = document.getElementById('answer-options');
-        const textAnswerInputEl = document.getElementById('text-answer-input');
-        const multipleChoiceAreaEl = document.getElementById('multiple-choice-area');
-        const textInputAreaEl = document.getElementById('text-input-area');
-        const duolingoToggleBtn = document.getElementById('duolingo-mode-toggle');
-        const flipCardEl = document.getElementById('flip-card');
-        const flipCardInnerEl = document.getElementById('flip-card-inner');
-        const flipCardBackEl = document.getElementById('flip-card-back');
-        const feedbackAuthorNameBackEl = document.getElementById('feedback-author-name-back');
-        const feedbackResultEl = document.getElementById('feedback-result');
-        const feedbackCorrectAnswerEl = document.getElementById('feedback-correct-answer');
-        const feedbackWorkTypeEl = document.getElementById('feedback-work-type');
-        const submitButton = document.getElementById('submit-answer');
-        const nextButton = document.getElementById('next-question');
-        const scoreEl = document.getElementById('score');
-        const finalMessageEl = document.getElementById('final-message');
-        const modeRadios = document.querySelectorAll('input[name="quiz-mode"]');
+        // DOM Elements (majoritatea definite în HTML)
+        const hintDisplayEl = document.getElementById('hint-display');
+        const statsButton = document.getElementById('stats-button');
+        const statsModal = document.getElementById('stats-modal');
+        const statsListEl = document.getElementById('stats-list');
+        const closeStatsModalButton = document.getElementById('close-stats-modal');
+        const resetStatsButton = document.getElementById('reset-stats-button');
+
+
+        // --- Statistici ---
+        let stats = {
+            totalQuestionsAnsweredTextMode: 0,
+            totalCorrectTextMode: 0,
+            totalIncorrectTextMode: 0,
+            totalHintsUsed: 0,
+            // More complex stats like per-item errors can be added later
+        };
+
+        function loadStats() {
+            const savedStats = localStorage.getItem('quizStats');
+            if (savedStats) {
+                stats = JSON.parse(savedStats);
+            }
+        }
+
+        function saveStats() {
+            localStorage.setItem('quizStats', JSON.stringify(stats));
+        }
+
+        function displayStats() {
+            statsListEl.innerHTML = `
+                <li>Total întrebări (mod text): ${stats.totalQuestionsAnsweredTextMode}</li>
+                <li>Răspunsuri corecte (mod text): ${stats.totalCorrectTextMode}</li>
+                <li>Răspunsuri greșite (mod text): ${stats.totalIncorrectTextMode}</li>
+                <li>Indicii folosite: ${stats.totalHintsUsed}</li>
+            `;
+            statsModal.style.display = 'flex';
+        }
+        // --- End Statistici ---
+
 
         function normalizeString(str) {
             if (!str) return "";
@@ -363,6 +486,10 @@
             submitButton.classList.remove('hidden');
             submitButton.disabled = false;
             flipCardEl.classList.remove('hidden');
+            hintUsedThisTurn = false;
+            hintCharsShown = 0;
+            if(hintDisplayEl) hintDisplayEl.textContent = '';
+
 
             if (currentMode === 'multiple-choice') {
                 originalDataForMC = shuffleArray([...initialData]);
@@ -373,12 +500,11 @@
                 textInputAreaEl.classList.add('hidden');
                 duolingoToggleBtn.classList.add('hidden');
                 submitButton.classList.add('hidden');
-            } else { // text-input mode
-                // Initialize quizPool with mastery info for each item
+            } else {
                 quizPool = shuffleArray(initialData.map(item => ({
                     ...item,
-                    correctStreak: 0, // How many times answered correctly in a row
-                    isMastered: false  // True if correctStreak >= MASTERY_THRESHOLD
+                    correctStreak: 0,
+                    isMastered: false
                 })));
                 masteredItemCount = 0;
                 currentQuestionData = null;
@@ -395,13 +521,18 @@
         function loadQuestion() {
             submittedAnswer = false;
             flipCardEl.classList.remove('flipped');
-            flipCardBackEl.className = 'flip-card-back';
+            // ... (reset feedback elements)
+            hintUsedThisTurn = false;
+            hintCharsShown = 0;
+            if(hintDisplayEl) hintDisplayEl.textContent = '';
             feedbackAuthorNameBackEl.textContent = '';
             feedbackResultEl.textContent = '';
             feedbackCorrectAnswerEl.textContent = '';
             feedbackWorkTypeEl.textContent = '';
 
+
             if (currentMode === 'multiple-choice') {
+                // ... (MC load logic as before)
                 if (mcCurrentIndex >= originalDataForMC.length) {
                     showFinalMessage();
                     return;
@@ -430,18 +561,11 @@
 
             } else { // text-input mode
                 if (masteredItemCount === initialData.length && quizPool.every(item => item.isMastered)) {
-                    // Double check: if all are mastered, end.
-                    // This condition might be hit if the last item mastered also empties a specific view of the pool.
                     showFinalMessage();
                     return;
                 }
-
-                // Select the next question from the quizPool.
-                // Prioritize items not yet mastered or with lower correctStreak.
-                // For now, simple: pick the first one. More advanced logic could be added.
-                if (quizPool.length === 0) { // Should not happen if masteredItemCount isn't full
-                    console.error("Quiz pool empty but not all items mastered. This shouldn't happen.");
-                    showFinalMessage(); // Fallback
+                if (quizPool.length === 0) {
+                    showFinalMessage(); // Should be caught by masteredItemCount ideally
                     return;
                 }
                 currentQuestionData = quizPool[0];
@@ -456,6 +580,7 @@
         }
 
         function handleMultipleChoiceSelection(buttonEl, isCorrect) {
+            // ... (MC selection logic as before)
             if (submittedAnswer) return;
             submittedAnswer = true;
             mcQuestionsAnswered++;
@@ -487,6 +612,8 @@
             if (submittedAnswer) return;
             submittedAnswer = true;
 
+            stats.totalQuestionsAnsweredTextMode++;
+
             const userAnswer = normalizeString(textAnswerInputEl.value);
             const correctAnswer = normalizeString(currentQuestionData.work);
 
@@ -494,65 +621,65 @@
             submitButton.disabled = true;
             feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
 
-            const itemInPool = quizPool[0]; // currentQuestionData is a reference to this
+            const itemInPool = quizPool[0];
 
             if (userAnswer === correctAnswer) {
                 feedbackResultEl.textContent = "Corect!";
                 flipCardBackEl.classList.add('correct');
-                itemInPool.correctStreak++;
+                stats.totalCorrectTextMode++;
 
-                if (!itemInPool.isMastered && itemInPool.correctStreak >= MASTERY_THRESHOLD) {
-                    itemInPool.isMastered = true;
-                    masteredItemCount++;
+                if (!hintUsedThisTurn) { // Only advance mastery if no hint was used
+                    itemInPool.correctStreak++;
+                    if (!itemInPool.isMastered && itemInPool.correctStreak >= MASTERY_THRESHOLD) {
+                        itemInPool.isMastered = true;
+                        // masteredItemCount will be recalculated below
+                    }
                 }
+                // If hint was used, streak does not increase, mastery status doesn't change based on this correct answer.
 
-                // Move the correctly answered item.
-                // If mastered, move further back. If not yet mastered, keep it relatively sooner.
-                const correctlyAnsweredItem = quizPool.shift(); // Remove from front
-                if (itemInPool.isMastered) {
-                    // For mastered items, put them at the end for less frequent review
-                    quizPool.push(correctlyAnsweredItem);
-                } else {
-                    // Not yet mastered, reinsert a bit further down, but not at the very end
-                    // This ensures it's seen again relatively soon to reach mastery.
+                // Move the item regardless of hint, but placement might differ
+                const processedItem = quizPool.shift();
+                if (itemInPool.isMastered && !hintUsedThisTurn) { // Truly mastered and no hint
+                    quizPool.push(processedItem); // To the end
+                } else if (hintUsedThisTurn && userAnswer === correctAnswer) {
+                    // Correct with hint: treat as if it needs more practice, but not as a full error
+                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 2);
+                    quizPool.splice(reinsertIndex, 0, processedItem);
+                }
+                else { // Not yet mastered or hint was used on a previously unmastered correct
                     let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 1);
-                     // Ensure it's not immediately repeated unless it's one of the few left
                     if (quizPool.length > 2 && reinsertIndex < 2) reinsertIndex = 2;
-                    quizPool.splice(reinsertIndex, 0, correctlyAnsweredItem);
+                    quizPool.splice(reinsertIndex, 0, processedItem);
                 }
 
             } else { // Incorrect answer
                 feedbackResultEl.textContent = "Greșit!";
                 flipCardBackEl.classList.add('incorrect');
+                stats.totalIncorrectTextMode++;
 
-                // If it was previously mastered, decrement mastered count and mark as not mastered
-                if (itemInPool.isMastered) {
+                if (itemInPool.isMastered) { // Was mastered, but now incorrect
                     itemInPool.isMastered = false;
-                    masteredItemCount--;
+                    // masteredItemCount will be recalculated
                 }
-                itemInPool.correctStreak = 0; // Reset streak
+                itemInPool.correctStreak = 0;
 
-                const incorrectItem = quizPool.shift(); // Remove from front
+                const incorrectItem = quizPool.shift();
                 if (duolingoModeActive) {
-                    // Re-insert sooner for Duolingo mode
                     let reinsertAtIndex = 1;
                     if (quizPool.length > 2) reinsertAtIndex = Math.floor(Math.random() * 2) + 1;
                     else if (quizPool.length > 0) reinsertAtIndex = 1;
                     else reinsertAtIndex = 0;
                     quizPool.splice(reinsertAtIndex, 0, incorrectItem);
                 } else {
-                    // Mode off, reinsert a bit further down, but not necessarily at the very end,
-                    // as it needs to be relearned.
                     let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 3) + 1);
                     if (quizPool.length > 3 && reinsertIndex < 2) reinsertIndex = 2;
                     quizPool.splice(reinsertIndex, 0, incorrectItem);
                 }
             }
-            // Recalculate masteredItemCount just in case of edge cases with penalization
-            masteredItemCount = quizPool.filter(item => item.isMastered).length;
+            masteredItemCount = quizPool.filter(item => item.isMastered).length; // Recalculate
+            saveStats(); // Save stats after each answer
 
-
-            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work} (Serie corectă: ${itemInPool.correctStreak})`;
+            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work} (Serie: ${itemInPool.correctStreak}${hintUsedThisTurn ? ", Indiciu folosit":""})`;
             feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
@@ -569,7 +696,8 @@
         }
 
         function showFinalMessage() {
-            flipCardEl.classList.add('hidden');
+            // ... (final message logic as before)
+             flipCardEl.classList.add('hidden');
             multipleChoiceAreaEl.classList.add('hidden');
             textInputAreaEl.classList.add('hidden');
             submitButton.classList.add('hidden');
@@ -584,8 +712,6 @@
                      scoreEl.textContent = `Toate ${initialData.length} operele stăpânite!`;
                      finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${initialData.length} opere!`;
                 } else {
-                    // This case should ideally not be reached if logic is sound,
-                    // but as a fallback:
                     scoreEl.textContent = `Quiz terminat! Opere stăpânite: ${masteredItemCount} / ${initialData.length}`;
                     finalMessageEl.textContent = `Sesiune încheiată. Ai stăpânit ${masteredItemCount} din ${initialData.length} opere. Continuă să exersezi!`;
                 }
@@ -595,7 +721,6 @@
             const restartButton = document.createElement('button');
             restartButton.textContent = "Reîncepe Quiz";
             restartButton.style.marginTop = "20px";
-            // ... (rest of button styling and onclick handler)
             restartButton.style.padding = "10px 20px";
             restartButton.style.backgroundColor = "#007bff";
             restartButton.style.color = "white";
@@ -608,6 +733,7 @@
             finalMessageEl.appendChild(restartButton);
         }
 
+        // Event Listeners
         modeRadios.forEach(radio => {
             radio.addEventListener('change', (event) => {
                 currentMode = event.target.value;
@@ -640,6 +766,49 @@
             }
         });
 
+        document.addEventListener('keydown', function(event) {
+            if (currentMode === 'text-input' && !submittedAnswer && currentQuestionData && event.key.toLowerCase() === 'h') {
+                event.preventDefault(); // Prevent 'h' from being typed if input is focused
+                hintUsedThisTurn = true;
+                hintCharsShown++;
+                const correctAnswerWork = currentQuestionData.work;
+                if (hintCharsShown <= correctAnswerWork.length) {
+                    hintDisplayEl.textContent = "Indiciu: " + correctAnswerWork.substring(0, hintCharsShown) + "_".repeat(correctAnswerWork.length - hintCharsShown);
+                    if(hintCharsShown === 1) { // Only count hint usage once per turn on first 'h'
+                        stats.totalHintsUsed++;
+                        saveStats();
+                    }
+                } else {
+                     hintDisplayEl.textContent = "Indiciu: " + correctAnswerWork; // Show full word if 'h' pressed too many times
+                }
+            }
+        });
+
+        statsButton.addEventListener('click', displayStats);
+        closeStatsModalButton.addEventListener('click', () => {
+            statsModal.style.display = 'none';
+        });
+        resetStatsButton.addEventListener('click', () => {
+            if(confirm("Ești sigur că vrei să resetezi toate statisticile?")) {
+                stats = {
+                    totalQuestionsAnsweredTextMode: 0,
+                    totalCorrectTextMode: 0,
+                    totalIncorrectTextMode: 0,
+                    totalHintsUsed: 0,
+                };
+                saveStats();
+                displayStats(); // Refresh the displayed stats
+            }
+        });
+        window.addEventListener('click', (event) => { // Close modal on outside click
+            if (event.target == statsModal) {
+                statsModal.style.display = "none";
+            }
+        });
+
+
+        // Initialize
+        loadStats();
         setupQuiz();
     </script>
 
