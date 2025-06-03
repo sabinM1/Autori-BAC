@@ -59,7 +59,7 @@
         .flip-card {
             background-color: transparent;
             width: 100%;
-            min-height: 200px; /* Adjust as needed for extra line */
+            min-height: 220px; /* Increased height for author name on back */
             perspective: 1000px;
             margin-bottom: 20px;
         }
@@ -68,12 +68,11 @@
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 200px; /* Adjust as needed for extra line */
+            min-height: 220px; /* Increased height */
             text-align: center;
             transition: transform 0.6s;
             transform-style: preserve-3d;
             border-radius: 8px;
-
         }
 
         .flip-card.flipped .flip-card-inner {
@@ -84,7 +83,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            min-height: 200px; /* Adjust as needed for extra line */
+            min-height: 220px; /* Increased height */
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             display: flex;
@@ -116,7 +115,6 @@
             color: #721c24;
         }
 
-
         #author-question {
             font-size: 1.5em;
             font-weight: bold;
@@ -134,16 +132,21 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 1em;
-            transition: background-color 0.2s;
+            transition: background-color 0.2s, opacity 0.4s ease-out; /* Added opacity transition */
+        }
+        .answer-options button.fade-out { /* New class for fading out */
+            opacity: 0;
+            pointer-events: none; /* Prevent interaction after fade */
         }
 
         .answer-options button:hover {
             background-color: #0056b3;
         }
-        .answer-options button:disabled {
+        .answer-options button:disabled:not(.fade-out) { /* Ensure disabled style doesn't conflict with fade */
             background-color: #ccc;
             cursor: not-allowed;
         }
+
 
         #text-answer-input {
             width: calc(100% - 22px);
@@ -176,7 +179,6 @@
             cursor: not-allowed;
         }
 
-
         #next-question {
             background-color: #ffc107;
             color: #212529;
@@ -185,22 +187,22 @@
             background-color: #e0a800;
         }
 
-        #feedback {
-            margin-top: 15px;
+        #feedback-author-name-back { /* Style for author name on back */
             font-size: 1.1em;
             font-weight: bold;
+            color: #495057; /* Slightly different color */
+            margin-bottom: 8px;
         }
-
         #feedback-result {
             font-size: 1.3em;
             font-weight: bold;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
         #feedback-correct-answer {
             font-size: 1.1em;
             margin-bottom: 5px;
         }
-        #feedback-work-type { /* New style for work type */
+        #feedback-work-type {
             font-size: 0.95em;
             font-style: italic;
             margin-top: 5px;
@@ -236,9 +238,10 @@
                     <p id="author-question">Nume Autor</p>
                 </div>
                 <div class="flip-card-back" id="flip-card-back">
+                    <p id="feedback-author-name-back"></p> <!-- Author name on back -->
                     <p id="feedback-result"></p>
                     <p id="feedback-correct-answer"></p>
-                    <p id="feedback-work-type"></p> <!-- Added element for work type -->
+                    <p id="feedback-work-type"></p>
                 </div>
             </div>
         </div>
@@ -301,9 +304,10 @@
         const flipCardEl = document.getElementById('flip-card');
         const flipCardInnerEl = document.getElementById('flip-card-inner');
         const flipCardBackEl = document.getElementById('flip-card-back');
+        const feedbackAuthorNameBackEl = document.getElementById('feedback-author-name-back'); // New element for author on back
         const feedbackResultEl = document.getElementById('feedback-result');
         const feedbackCorrectAnswerEl = document.getElementById('feedback-correct-answer');
-        const feedbackWorkTypeEl = document.getElementById('feedback-work-type'); // Get the new element
+        const feedbackWorkTypeEl = document.getElementById('feedback-work-type');
 
         const submitButton = document.getElementById('submit-answer');
         const nextButton = document.getElementById('next-question');
@@ -315,10 +319,10 @@
         function normalizeString(str) {
             if (!str) return "";
             return str.toLowerCase()
-                      .normalize("NFD") // Normalize to decompose combined diacritical marks
-                      .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
-                      .replace(/[^\w\s]/gi, '') // Remove punctuation
-                      .replace(/\s+/g, ' ') // Normalize whitespace
+                      .normalize("NFD")
+                      .replace(/[\u0300-\u036f]/g, "")
+                      .replace(/[^\w\s]/gi, '')
+                      .replace(/\s+/g, ' ')
                       .trim();
         }
 
@@ -347,10 +351,11 @@
         function loadQuestion() {
             submittedAnswer = false;
             flipCardEl.classList.remove('flipped');
-            flipCardBackEl.className = 'flip-card-back'; // Reset back card style
+            flipCardBackEl.className = 'flip-card-back';
+            feedbackAuthorNameBackEl.textContent = ''; // Clear author name on back
             feedbackResultEl.textContent = '';
             feedbackCorrectAnswerEl.textContent = '';
-            feedbackWorkTypeEl.textContent = ''; // Clear work type
+            feedbackWorkTypeEl.textContent = '';
 
             if (currentQuestionIndex >= shuffledData.length) {
                 showFinalMessage();
@@ -363,12 +368,11 @@
             if (currentMode === 'multiple-choice') {
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
-                answerOptionsEl.innerHTML = ''; // Clear previous options
+                answerOptionsEl.innerHTML = '';
 
                 const correctAnswer = currentPair.work;
                 let options = [correctAnswer];
 
-                // Get 3 wrong answers
                 const wrongAnswers = shuffledData
                     .map(item => item.work)
                     .filter(work => work !== correctAnswer);
@@ -379,23 +383,23 @@
                         options.push(wrongAnswers[i]);
                     }
                 }
-                // If not enough unique wrong answers from data, add placeholders (less ideal)
                  while (options.length < 4) {
                     options.push(`Opțiune falsă ${options.length}`);
                 }
-
 
                 shuffleArray(options);
 
                 options.forEach(option => {
                     const button = document.createElement('button');
                     button.textContent = option;
+                    // Remove fade-out class if it was somehow stuck (though innerHTML='' should handle this)
+                    button.classList.remove('fade-out');
                     button.onclick = () => handleMultipleChoiceSelection(button, option === correctAnswer);
                     answerOptionsEl.appendChild(button);
                 });
-                 submitButton.classList.add('hidden'); // Hide submit for MCQs, answer on click
+                 submitButton.classList.add('hidden');
 
-            } else { // text-input mode
+            } else {
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
                 textAnswerInputEl.value = '';
@@ -414,16 +418,20 @@
             questionsAnswered++;
             const currentPair = shuffledData[currentQuestionIndex];
 
-            // Disable all option buttons
+            feedbackAuthorNameBackEl.textContent = `Autor: ${currentPair.author}`; // Show author on back
+
             Array.from(answerOptionsEl.children).forEach(btn => {
                 btn.disabled = true;
                 if (btn.textContent === currentPair.work) {
-                    btn.style.backgroundColor = '#28a745'; // Highlight correct
+                    btn.style.backgroundColor = '#28a745';
                 } else if (btn === buttonEl && !isCorrect) {
-                     btn.style.backgroundColor = '#dc3545'; // Highlight selected wrong
+                     btn.style.backgroundColor = '#dc3545';
                 }
+                // Add fade-out effect after a short delay
+                setTimeout(() => {
+                    btn.classList.add('fade-out');
+                }, 300); // 300ms delay before starting fade
             });
-
 
             if (isCorrect) {
                 score++;
@@ -434,7 +442,7 @@
                 flipCardBackEl.classList.add('incorrect');
             }
             feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentPair.work}`;
-            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentPair.type}`; // Display work type
+            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentPair.type}`;
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
             nextButton.classList.remove('hidden');
@@ -454,6 +462,8 @@
             textAnswerInputEl.disabled = true;
             submitButton.disabled = true;
 
+            feedbackAuthorNameBackEl.textContent = `Autor: ${currentPair.author}`; // Show author on back
+
             if (userAnswer === correctAnswer) {
                 score++;
                 feedbackResultEl.textContent = "Corect!";
@@ -463,7 +473,7 @@
                 flipCardBackEl.classList.add('incorrect');
             }
             feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentPair.work}`;
-            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentPair.type}`; // Display work type
+            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentPair.type}`;
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
             nextButton.classList.remove('hidden');
@@ -484,7 +494,6 @@
             finalMessageEl.textContent = `Quiz terminat! Ai răspuns corect la ${score} din ${shuffledData.length} întrebări.`;
             finalMessageEl.classList.remove('hidden');
 
-            // Option to restart
             const restartButton = document.createElement('button');
             restartButton.textContent = "Reîncepe Quiz";
             restartButton.style.marginTop = "20px";
@@ -494,18 +503,17 @@
             restartButton.style.border = "none";
             restartButton.style.borderRadius = "5px";
             restartButton.onclick = () => {
-                finalMessageEl.innerHTML = ''; // Clear message and button
+                finalMessageEl.innerHTML = '';
                 flipCardEl.classList.remove('hidden');
                 setupQuiz();
             };
             finalMessageEl.appendChild(restartButton);
-
         }
 
         modeRadios.forEach(radio => {
             radio.addEventListener('change', (event) => {
                 currentMode = event.target.value;
-                setupQuiz(); 
+                setupQuiz();
             });
         });
 
@@ -526,7 +534,6 @@
             }
         });
 
-        // Initialize
         setupQuiz();
     </script>
 
