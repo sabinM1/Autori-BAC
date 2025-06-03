@@ -59,7 +59,7 @@
         .flip-card {
             background-color: transparent;
             width: 100%;
-            min-height: 180px; /* Adjust as needed */
+            min-height: 200px; /* Adjust as needed for extra line */
             perspective: 1000px;
             margin-bottom: 20px;
         }
@@ -68,7 +68,7 @@
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 180px;
+            min-height: 200px; /* Adjust as needed for extra line */
             text-align: center;
             transition: transform 0.6s;
             transform-style: preserve-3d;
@@ -84,7 +84,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            min-height: 180px;
+            min-height: 200px; /* Adjust as needed for extra line */
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             display: flex;
@@ -198,6 +198,12 @@
         }
         #feedback-correct-answer {
             font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        #feedback-work-type { /* New style for work type */
+            font-size: 0.95em;
+            font-style: italic;
+            margin-top: 5px;
         }
 
         .hidden {
@@ -232,6 +238,7 @@
                 <div class="flip-card-back" id="flip-card-back">
                     <p id="feedback-result"></p>
                     <p id="feedback-correct-answer"></p>
+                    <p id="feedback-work-type"></p> <!-- Added element for work type -->
                 </div>
             </div>
         </div>
@@ -260,22 +267,22 @@
 
     <script>
         const data = [
-            { author: "Mihai Eminescu", work: "Floare Albastră" },
-            { author: "Liviu Rebreanu", work: "Ion" },
-            { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii" },
-            { author: "Mihail Sadoveanu", work: "Baltagul" },
-            { author: "Marin Preda", work: "Moromeții" },
-            { author: "G. Călinescu", work: "Enigma Otiliei" },
-            { author: "Ioan Slavici", work: "Moara cu noroc" },
-            { author: "Ion Luca Caragiale", work: "O scrisoare pierdută" },
-            { author: "Ion Creangă", work: "Povestea lui Harap-Alb" },
-            { author: "Ion Barbu", work: "Riga Crypto și Lapona Enigel" },
-            { author: "Tudor Arghezi", work: "Flori de mucigai" },
-            { author: "Camil Petrescu", work: "Ultima noapte de dragoste, întâia noapte de război" },
-            { author: "George Bacovia", work: "Plumb" },
-            { author: "Nichita Stănescu", work: "Leoaică tânără, iubirea..." },
-            { author: "Marin Sorescu", work: "Iona" },
-            { author: "Ion Pillat", work: "Aci sosi pe vremuri" }
+            { author: "Mihai Eminescu", work: "Floare Albastră", type: "Poezie romantică" },
+            { author: "Liviu Rebreanu", work: "Ion", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
+            { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii", type: "Poezie modernistă, expresionistă (interbelică)" },
+            { author: "Mihail Sadoveanu", work: "Baltagul", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
+            { author: "Marin Preda", work: "Moromeții", type: "Roman postbelic, realist, obiectiv, tradiționalist" },
+            { author: "G. Călinescu", work: "Enigma Otiliei", type: "Roman interbelic, realist, obiectiv, modern, citadin" },
+            { author: "Ioan Slavici", work: "Moara cu noroc", type: "Nuvelă realistă, obiectivă, psihologică" },
+            { author: "Ion Luca Caragiale", work: "O scrisoare pierdută", type: "Comedie, text dramatic" },
+            { author: "Ion Creangă", work: "Povestea lui Harap-Alb", type: "Basm cult" },
+            { author: "Ion Barbu", work: "Riga Crypto și Lapona Enigel", type: "Poezie modernistă (interbelică)" },
+            { author: "Tudor Arghezi", work: "Flori de mucigai", type: "Poezie modernistă (interbelică)" },
+            { author: "Camil Petrescu", work: "Ultima noapte de dragoste, întâia noapte de război", type: "Roman interbelic, subiectiv, modern, psihologic, al experienței" },
+            { author: "George Bacovia", work: "Plumb", type: "Poezie simbolistă" },
+            { author: "Nichita Stănescu", work: "Leoaică tânără, iubirea...", type: "Poezie postbelică neomodernistă" },
+            { author: "Marin Sorescu", work: "Iona", type: "Text dramatic postbelic, teatru modern, absurd" },
+            { author: "Ion Pillat", work: "Aci sosi pe vremuri", type: "Poezie tradiționalistă interbelică" }
         ];
 
         let shuffledData = [];
@@ -296,6 +303,7 @@
         const flipCardBackEl = document.getElementById('flip-card-back');
         const feedbackResultEl = document.getElementById('feedback-result');
         const feedbackCorrectAnswerEl = document.getElementById('feedback-correct-answer');
+        const feedbackWorkTypeEl = document.getElementById('feedback-work-type'); // Get the new element
 
         const submitButton = document.getElementById('submit-answer');
         const nextButton = document.getElementById('next-question');
@@ -342,6 +350,7 @@
             flipCardBackEl.className = 'flip-card-back'; // Reset back card style
             feedbackResultEl.textContent = '';
             feedbackCorrectAnswerEl.textContent = '';
+            feedbackWorkTypeEl.textContent = ''; // Clear work type
 
             if (currentQuestionIndex >= shuffledData.length) {
                 showFinalMessage();
@@ -425,6 +434,7 @@
                 flipCardBackEl.classList.add('incorrect');
             }
             feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentPair.work}`;
+            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentPair.type}`; // Display work type
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
             nextButton.classList.remove('hidden');
@@ -453,6 +463,7 @@
                 flipCardBackEl.classList.add('incorrect');
             }
             feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentPair.work}`;
+            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentPair.type}`; // Display work type
             flipCardEl.classList.add('flipped');
             updateScoreDisplay();
             nextButton.classList.remove('hidden');
@@ -494,11 +505,6 @@
         modeRadios.forEach(radio => {
             radio.addEventListener('change', (event) => {
                 currentMode = event.target.value;
-                // Reset current question to adapt to new mode, or just reload the UI
-                // For simplicity, we can just reload the current question with the new mode
-                // but this might feel like skipping if an answer was partially made.
-                // A better UX might be to finish the current question or restart.
-                // Let's restart the quiz for mode change for simplicity.
                 setupQuiz(); 
             });
         });
@@ -507,7 +513,6 @@
             if (currentMode === 'text-input') {
                 checkTextAnswer();
             }
-            // For multiple choice, submission is handled by option click
         });
 
         nextButton.addEventListener('click', () => {
