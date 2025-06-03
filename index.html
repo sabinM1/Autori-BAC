@@ -5,379 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quiz Autori Opere</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* ... (CSS-ul rămâne în mare parte la fel, cu ajustările anterioare pentru padding) ... */
+        /* Adăugăm stil pentru butonul toggle timer */
+        #timer-controls {
             display: flex;
-            flex-direction: column;
             align-items: center;
-            justify-content: center; 
-            min-height: 100vh;
-            margin: 0;
-            background-color: #f0f2f5;
-            color: #333;
-            padding: 10px; 
-            box-sizing: border-box;
-            position: relative; 
-        }
-        #stats-button {
-            position: absolute;
-            top: 10px; 
-            right: 10px; 
-            padding: 6px 10px; 
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.85em; 
-            z-index: 100;
-        }
-        #stats-button:hover {
-            background-color: #5a6268;
-        }
-        .stats-modal {
-            display: none; 
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.5);
-            align-items: center; 
-            justify-content: center; 
-        }
-        .stats-modal-content {
-            background-color: #fff;
-            margin: auto; 
-            padding: 20px; 
-            border: 1px solid #888;
-            width: 80%;
-            max-width: 400px; 
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-            text-align: left;
-        }
-        .stats-modal-content h2 {
-            text-align: center;
-            color: #007bff;
-            margin-top: 0;
-            margin-bottom: 15px; 
-        }
-        .stats-modal-content ul {
-            list-style-type: none;
-            padding: 0;
-        }
-        .stats-modal-content ul li {
-            margin-bottom: 6px; 
-            font-size: 1em; 
-        }
-         .stats-modal-content .top3-list { 
-            margin-top: 15px;
-            padding-top: 10px;
-            border-top: 1px solid #eee;
-        }
-         .stats-modal-content .top3-list h3 {
-             margin-top: 0;
-             margin-bottom: 8px;
-             font-size: 1.1em;
-             color: #495057;
-         }
-         .stats-modal-content .top3-list ul {
-             list-style-type: decimal; /* Numbered list for top 3 */
-             padding-left: 20px;
-         }
-         .stats-modal-content .top3-list li {
-            font-weight: bold;
-            color: #28a745; 
-         }
-        .stats-modal-content button { 
-            display: block;
-            margin: 15px auto 0; 
-            padding: 8px 12px; 
-            border:none;
-            border-radius: 5px;
-            cursor:pointer;
-        }
-        .close-stats-button { 
-             background-color: #dc3545;
-             color: white;
-        }
-        #reset-stats-button { 
-            background-color: #ffc107;
-            color: #212529;
-            margin-top:8px; 
-            border:none;
-            border-radius: 5px;
-            cursor:pointer;
-        }
-        .container {
-            background-color: #fff;
-            padding: 20px; 
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 550px; 
-            text-align: center;
-            margin-top: 35px; 
-        }
-        h1 {
-            color: #007bff;
-            margin-top: 0; 
-            margin-bottom: 15px; 
-            font-size: 1.8em; 
-        }
-        .mode-selector {
-            margin-bottom: 10px; 
-            display: flex;
             justify-content: center;
-            gap: 10px; 
+            margin-bottom: 10px;
+            gap: 10px;
         }
-        .mode-selector label {
-            cursor: pointer;
-            padding: 6px 12px; 
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            transition: background-color 0.3s, color 0.3s;
-            font-size: 0.9em; 
-        }
-        .mode-selector input[type="radio"] {
-            display: none;
-        }
-        .mode-selector input[type="radio"]:checked + label {
-            background-color: #007bff;
-            color: white;
-            border-color: #007bff;
-        }
-        .text-mode-options { /* Container for duolingo and timer toggles */
-             margin-bottom: 15px;
-             display: flex;
-             justify-content: center;
-             gap: 10px;
-        }
-        .toggle-button { /* General style for toggle buttons */
-            padding: 6px 12px;
-            font-size: 0.9em;
-            border: 1px solid #6c757d;
-            border-radius: 5px;
-            cursor: pointer;
-            background-color: #f8f9fa;
-            color: #212529;
-            transition: background-color 0.3s, color 0.3s;
-        }
-        .toggle-button.active {
-            background-color: #17a2b8;
-            color: white;
-            border-color: #17a2b8;
-        }
-        #timer-display { 
+        #timer-display {
             font-size: 1.1em;
             font-weight: bold;
             color: #007bff;
-            margin-bottom: 15px;
             min-height: 1.2em; 
-            visibility: hidden; /* Use visibility to reserve space */
         }
-        #timer-display.visible {
-            visibility: visible;
-        }
-        .flip-card {
-            background-color: transparent;
-            width: 100%;
-            min-height: 180px; 
-            perspective: 1000px;
-            margin-bottom: 15px; 
-        }
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            min-height: 180px; 
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            border-radius: 8px;
-        }
-        .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            min-height: 180px; 
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 15px; 
-            box-sizing: border-box;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f8f9fa;
-        }
-        .flip-card-front {
-            background-color: #e9ecef;
-            color: #333; 
-        }
-        .flip-card-front p:first-child {
-            font-size: 0.85em; 
-            color: #6c757d;
-            margin-bottom: 5px; 
-        }
-        .flip-card-back {
-            background-color: #d1ecf1;
-            color: #0c5460;
-            transform: rotateY(180deg);
-        }
-        .flip-card-back.correct {
-            background-color: #d4edda;
-            color: #155724;
-        }
-        .flip-card-back.incorrect {
-            background-color: #f8d7da;
-            color: #721c24;
-        }
-        #author-question {
-            font-size: 1.3em; 
-            font-weight: bold;
-            margin-bottom: 0; 
-            margin-top: 0; 
-        }
-        #multiple-choice-area p, #text-input-area p {
-            margin-top: 5px; 
-            margin-bottom: 8px; 
-            font-size: 0.95em;
-        }
-        .answer-options button {
-            display: block;
-            width: 100%;
-            padding: 10px; 
-            margin: 6px 0; 
-            background-color: #007bff;
+        #toggle-timer-button {
+            padding: 5px 10px;
+            font-size: 0.8em;
+            background-color: #6c757d;
             color: white;
             border: none;
-            border-radius: 5曆px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.95em; 
-            transition: background-color 0.2s, opacity 0.4s ease-out;
         }
-        .answer-options button.fade-out {
-            opacity: 0;
-            pointer-events: none;
+        #toggle-timer-button.active {
+            background-color: #28a745; /* Verde când e activ */
         }
-        .answer-options button:hover {
-            background-color: #0056b3;
-        }
-        .answer-options button:disabled:not(.fade-out) {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-        #text-input-area .input-area { /* Container for input and feedback */
-            position: relative; /* For absolute positioning of potential helper text */
-        }
-        #text-answer-input {
-            width: calc(100% - 20px); 
-            padding: 10px; 
-            margin-bottom: 8px;  
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 0.95em; 
-        }
-        #hint-display { 
-            min-height: 18px; 
-            margin-bottom: 10px; 
-            font-style: italic;
-            color: #007bff;
-            font-size: 0.85em; 
-        }
-        #wrong-work-author-feedback { 
-            min-height: 18px;
-            margin-top: -5px; 
-            margin-bottom: 10px;
-            font-style: italic;
-            color: #dc3545; 
-            font-size: 0.85em;
-        }
-        .action-buttons button {
-            padding: 10px 20px; 
-            margin: 5px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 0.95em; 
-            transition: background-color 0.2s;
-        }
-        #submit-answer {
-            background-color: #28a745;
-            color: white;
-        }
-        #submit-answer:hover {
-            background-color: #1e7e34;
-        }
-        #submit-answer:disabled {
-            background-color: #94dca4;
-            cursor: not-allowed;
-        }
-        #next-question {
-            background-color: #ffc107;
-            color: #212529;
-        }
-        #next-question:hover {
-            background-color: #e0a800;
-        }
-        #feedback-author-name-back {
-            font-size: 1em; 
-            font-weight: bold;
-            color: #495057;
-            margin-bottom: 6px; 
-        }
-        #feedback-result {
-            font-size: 1.1em; 
-            font-weight: bold;
-            margin-bottom: 6px; 
-        }
-        #feedback-correct-answer {
-            font-size: 1em; 
-            margin-bottom: 4px; 
-        }
-        #feedback-work-type {
-            font-size: 0.9em; 
-            font-style: italic;
-            margin-top: 4px; 
-        }
-        .hidden {
-            display: none !important;
-        }
-         #score {
-            margin-top: 15px; 
-            font-size: 1.1em; 
-        }
-        #final-message {
-            font-size: 1.3em !important; 
-            margin-top: 15px !important; 
-        }
-        #bravo-message { 
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 4em;
-            font-weight: bold;
-            color: #28a745; 
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-            z-index: 1000; 
-            display: none; 
-            animation: fade-in-out 2s ease-out; 
-        }
-        @keyframes fade-in-out {
-            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
-            50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
-            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
-        }
+        /* Restul CSS-ului de la ultima versiune */
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;background-color:#f0f2f5;color:#333;padding:10px;box-sizing:border-box;position:relative}#stats-button{position:absolute;top:10px;right:10px;padding:6px 10px;background-color:#6c757d;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.85em;z-index:100}#stats-button:hover{background-color:#5a6268}.stats-modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgba(0,0,0,.5);align-items:center;justify-content:center}.stats-modal-content{background-color:#fff;margin:auto;padding:20px;border:1px solid #888;width:80%;max-width:400px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.2);text-align:left}.stats-modal-content h2{text-align:center;color:#007bff;margin-top:0;margin-bottom:15px}.stats-modal-content ul{list-style-type:none;padding:0}.stats-modal-content ul li{margin-bottom:6px;font-size:1em}.stats-modal-content .top3-list{margin-top:15px;padding-top:10px;border-top:1px solid #eee}.stats-modal-content .top3-list li{font-weight:700;color:#28a745}.stats-modal-content button{display:block;margin:15px auto 0;padding:8px 12px;border:none;border-radius:5px;cursor:pointer}.close-stats-button{background-color:#dc3545;color:#fff}#reset-stats-button{background-color:#ffc107;color:#212529;margin-top:8px}.container{background-color:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.1);width:100%;max-width:550px;text-align:center;margin-top:35px}h1{color:#007bff;margin-top:0;margin-bottom:15px;font-size:1.8em}.mode-selector{margin-bottom:10px;display:flex;justify-content:center;gap:10px}.mode-selector label{cursor:pointer;padding:6px 12px;border:1px solid #ddd;border-radius:5px;transition:background-color .3s,color .3s;font-size:.9em}.mode-selector input[type=radio]{display:none}.mode-selector input[type=radio]:checked+label{background-color:#007bff;color:#fff;border-color:#007bff}#duolingo-mode-toggle{margin-bottom:15px;padding:6px 12px;font-size:.9em;border:1px solid #6c757d;border-radius:5px;cursor:pointer;background-color:#f8f9fa;color:#212529;transition:background-color .3s,color .3s}#duolingo-mode-toggle.active{background-color:#17a2b8;color:#fff;border-color:#17a2b8}.flip-card{background-color:transparent;width:100%;min-height:180px;perspective:1000px;margin-bottom:15px}.flip-card-inner{position:relative;width:100%;height:100%;min-height:180px;text-align:center;transition:transform .6s;transform-style:preserve-3d;border-radius:8px}.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;min-height:180px;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;box-sizing:border-box;border:1px solid #ddd;border-radius:8px;background-color:#f8f9fa}.flip-card-front{background-color:#e9ecef;color:#333}.flip-card-front p:first-child{font-size:.85em;color:#6c757d;margin-bottom:5px}.flip-card-back{background-color:#d1ecf1;color:#0c5460;transform:rotateY(180deg)}.flip-card-back.correct{background-color:#d4edda;color:#155724}.flip-card-back.incorrect{background-color:#f8d7da;color:#721c24}#author-question{font-size:1.3em;font-weight:700;margin-bottom:0;margin-top:0}#multiple-choice-area p,#text-input-area p{margin-top:5px;margin-bottom:8px;font-size:.95em}.answer-options button{display:block;width:100%;padding:10px;margin:6px 0;background-color:#007bff;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.95em;transition:background-color .2s,opacity .4s ease-out}.answer-options button.fade-out{opacity:0;pointer-events:none}.answer-options button:hover{background-color:#0056b3}.answer-options button:disabled:not(.fade-out){background-color:#ccc;cursor:not-allowed}#text-answer-input{width:calc(100% - 20px);padding:10px;margin-bottom:8px;border:1px solid #ccc;border-radius:5px;font-size:.95em}#hint-display{min-height:18px;margin-bottom:10px;font-style:italic;color:#007bff;font-size:.85em}#wrong-work-author-feedback{min-height:18px;margin-top:-5px;margin-bottom:10px;font-style:italic;color:#dc3545;font-size:.85em}.action-buttons button{padding:10px 20px;margin:5px;border:none;border-radius:5px;cursor:pointer;font-size:.95em;transition:background-color .2s}#submit-answer{background-color:#28a745;color:#fff}#submit-answer:hover{background-color:#1e7e34}#submit-answer:disabled{background-color:#94dca4;cursor:not-allowed}#next-question{background-color:#ffc107;color:#212529}#next-question:hover{background-color:#e0a800}#feedback-author-name-back{font-size:1em;font-weight:700;color:#495057;margin-bottom:6px}#feedback-result{font-size:1.1em;font-weight:700;margin-bottom:6px}#feedback-correct-answer{font-size:1em;margin-bottom:4px}#feedback-work-type{font-size:.9em;font-style:italic;margin-top:4px}.hidden{display:none!important}#score{margin-top:15px;font-size:1.1em}#final-message{font-size:1.3em!important;margin-top:15px!important}#bravo-message{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4em;font-weight:700;color:#28a745;text-shadow:2px 2px 5px rgba(0,0,0,.3);z-index:1000;display:none;animation:fade-in-out 2s ease-out}@keyframes fade-in-out{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.2)}}
     </style>
 </head>
 <body>
@@ -394,7 +50,7 @@
             <button class="close-stats-button" id="close-stats-modal">Închide</button>
         </div>
     </div>
-    <div id="bravo-message">BRAVO!</div> 
+    <div id="bravo-message">BRAVO!</div>
     <div class="container">
         <h1>Quiz Autori și Opere</h1>
         <div class="mode-selector">
@@ -403,11 +59,13 @@
             <input type="radio" id="mode-text" name="quiz-mode" value="text-input">
             <label for="mode-text">Scrie Răspunsul</label>
         </div>
-        <div class="text-mode-options hidden"> <!-- New container for text mode toggles -->
-            <button id="duolingo-mode-toggle" class="toggle-button">Activează Modul Repetiție</button>
-            <button id="timer-toggle" class="toggle-button active">Activează Timer</button> <!-- New Timer Toggle -->
+        <button id="duolingo-mode-toggle" class="hidden">Activează Modul Repetiție</button>
+
+        <div id="timer-controls" class="hidden"> <!-- Timer controls container -->
+             <div id="timer-display">Timp: 0m 0s 0ms</div>
+             <button id="toggle-timer-button">Activează Timer</button>
         </div>
-         <div id="timer-display"></div> 
+
         <div class="flip-card" id="flip-card">
             <div class="flip-card-inner" id="flip-card-inner">
                 <div class="flip-card-front" id="flip-card-front">
@@ -428,9 +86,7 @@
         </div>
         <div id="text-input-area" class="hidden">
             <p>Scrie titlul operei (fără diacritice, nu contează majusculele):</p>
-             <div class="input-area">
-                <input type="text" id="text-answer-input" placeholder="Titlul operei...">
-            </div>
+            <input type="text" id="text-answer-input" placeholder="Titlul operei...">
             <div id="hint-display"></div> 
             <div id="wrong-work-author-feedback"></div> 
         </div>
@@ -448,7 +104,7 @@
             { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii", type: "Poezie modernistă, expresionistă (interbelică)" },
             { author: "Mihail Sadoveanu", work: "Baltagul", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
             { author: "Marin Preda", work: "Moromeții", type: "Roman postbelic, realist, obiectiv, tradiționalist" },
-            { author: "G. Călinescu", work: "Enigma Otiliei", type: "Roman interbelic, realist, obiectiv, modern, citadin" },
+            { author: "George Călinescu", work: "Enigma Otiliei", type: "Roman interbelic, realist, obiectiv, modern, citadin" }, // Nume actualizat
             { author: "Ioan Slavici", work: "Moara cu noroc", type: "Nuvelă realistă, obiectivă, psihologică" },
             { author: "Ion Luca Caragiale", work: "O scrisoare pierdută", type: "Comedie, text dramatic" },
             { author: "Ion Creangă", work: "Povestea lui Harap-Alb", type: "Basm cult" },
@@ -470,22 +126,22 @@
         let mcQuestionsAnswered = 0;
         let mcCurrentIndex = 0;
         let submittedAnswer = false;
-        let duolingoModeActive = true; // Default duolingo active
-        let isTimerEnabled = true; // Default timer enabled
+        let duolingoModeActive = false;
         let hintUsedThisTurn = false;
         let hintCharsShown = 0;
+
         let startTime = null;
         let timerInterval = null;
-        let timerRunning = false; // New flag to track if timer is running
-        // DOM Elements
+        let timerActivePreference = true; // Default: timer is on
+        let timerStartedForQuestion = false; // Flag to check if timer started for the current question
+
+        // DOM Elements (most are defined, ensure all are here)
         const authorQuestionEl = document.getElementById('author-question');
         const answerOptionsEl = document.getElementById('answer-options');
         const textAnswerInputEl = document.getElementById('text-answer-input');
         const multipleChoiceAreaEl = document.getElementById('multiple-choice-area');
         const textInputAreaEl = document.getElementById('text-input-area');
-        const textModeOptionsEl = document.querySelector('.text-mode-options'); // New container element
         const duolingoToggleBtn = document.getElementById('duolingo-mode-toggle');
-        const timerToggleBtn = document.getElementById('timer-toggle'); // New timer toggle button
         const hintDisplayEl = document.getElementById('hint-display');
         const wrongWorkAuthorFeedbackEl = document.getElementById('wrong-work-author-feedback');
         const flipCardEl = document.getElementById('flip-card');
@@ -507,8 +163,11 @@
         const top3ListEl = document.getElementById('top3-list'); 
         const closeStatsModalButton = document.getElementById('close-stats-modal');
         const resetStatsButton = document.getElementById('reset-stats-button');
+        const timerControlsEl = document.getElementById('timer-controls'); // Container for timer and toggle
         const timerDisplayEl = document.getElementById('timer-display'); 
+        const toggleTimerButton = document.getElementById('toggle-timer-button'); // New button
         const bravoMessageEl = document.getElementById('bravo-message'); 
+
         let stats = {
             totalQuestionsAnsweredTextMode: 0,
             totalCorrectTextMode: 0,
@@ -516,6 +175,31 @@
             totalHintsUsed: 0,
             top3Times: [] 
         };
+
+        function loadSettings() {
+            const savedTimerPref = localStorage.getItem('quizTimerActivePreference');
+            if (savedTimerPref !== null) {
+                timerActivePreference = JSON.parse(savedTimerPref);
+            }
+            updateToggleTimerButtonVisuals();
+        }
+        function saveSettings() {
+            localStorage.setItem('quizTimerActivePreference', JSON.stringify(timerActivePreference));
+        }
+        function updateToggleTimerButtonVisuals() {
+            if (!toggleTimerButton) return;
+            if (timerActivePreference) {
+                toggleTimerButton.textContent = "Dezactivează Timer";
+                toggleTimerButton.classList.add('active');
+                if (timerDisplayEl) timerDisplayEl.style.visibility = 'visible';
+            } else {
+                toggleTimerButton.textContent = "Activează Timer";
+                toggleTimerButton.classList.remove('active');
+                if (timerDisplayEl) timerDisplayEl.style.visibility = 'hidden';
+                stopTimer(); // Stop if it was running and user disables it
+            }
+        }
+
         function loadStats() {
             const savedStats = localStorage.getItem('quizStats');
             if (savedStats) {
@@ -560,34 +244,39 @@
         }
 
         function formatTime(milliseconds) {
+            if (milliseconds === null || typeof milliseconds === 'undefined') return "N/A";
             const totalSeconds = Math.floor(milliseconds / 1000);
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
-            const ms = milliseconds % 1000;
-            // Pad single digits with a leading zero
-             const pad = (num) => num.toString().padStart(2, '0');
-            return `${pad(minutes)}m ${pad(seconds)}s ${ms.toString().padStart(3, '0')}ms`;
+            const ms = String(milliseconds % 1000).padStart(3, '0');
+            return `${minutes}m ${seconds}s ${ms}ms`;
         }
-        function startTimer() {
-            if (!timerRunning && isTimerEnabled) {
-                 startTime = Date.now();
-                 timerInterval = setInterval(updateTimerDisplay, 50); 
-                 timerRunning = true;
-                 if(timerDisplayEl) timerDisplayEl.classList.add('visible'); // Make timer visible
-            }
+        function startQuizTimer() { // Renamed to be more specific for the overall quiz
+            if (!timerActivePreference || startTime !== null) return; // Don't start if disabled or already started
+            startTime = Date.now();
+            if (timerInterval) clearInterval(timerInterval); // Clear any existing
+            timerInterval = setInterval(updateTimerDisplay, 50); 
+            timerStartedForQuestion = true; // Indicates quiz timer has started
         }
-        function stopTimer() {
-            if (timerRunning) {
+        function stopQuizTimer() { // Renamed
+            if (timerInterval) {
                 clearInterval(timerInterval);
                 timerInterval = null;
-                timerRunning = false;
-                 if(timerDisplayEl) timerDisplayEl.classList.remove('visible'); // Hide timer
-                return Date.now() - startTime; 
             }
-             return 0; // Return 0 if timer wasn't running
+            const elapsedTime = startTime ? Date.now() - startTime : null;
+            startTime = null; // Reset for next quiz start
+            timerStartedForQuestion = false; // Reset for next question
+            return elapsedTime; 
+        }
+        function resetQuestionTimerState() {
+            timerStartedForQuestion = false;
+             // If timer is preference ON but not started overall, reset display.
+            if (timerActivePreference && startTime === null && timerDisplayEl) {
+                 timerDisplayEl.textContent = `Timp: 0m 0s 000ms`;
+            }
         }
         function updateTimerDisplay() {
-            if (!timerDisplayEl || !startTime) return; // Check for startTime too
+            if (!timerDisplayEl || !timerActivePreference || startTime === null) return;
             const elapsedTime = Date.now() - startTime;
             timerDisplayEl.textContent = `Timp: ${formatTime(elapsedTime)}`;
         }
@@ -614,7 +303,10 @@
             if(hintDisplayEl) hintDisplayEl.textContent = '';
             if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = '';
             if(bravoMessageEl) bravoMessageEl.style.display = 'none'; 
-            stopTimer(); // Always stop timer at setup
+
+            stopQuizTimer(); // Stop any existing timer
+            resetQuestionTimerState(); // Reset question-specific timer flag
+
             if (currentMode === 'multiple-choice') {
                 originalDataForMC = shuffleArray([...initialData]);
                 mcCurrentIndex = 0;
@@ -622,9 +314,9 @@
                 mcQuestionsAnswered = 0;
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
-                if(textModeOptionsEl) textModeOptionsEl.classList.add('hidden'); // Hide text mode options
-                 if(timerDisplayEl) timerDisplayEl.classList.add('hidden'); // Hide timer display
+                duolingoToggleBtn.classList.add('hidden');
                 submitButton.classList.add('hidden'); 
+                if(timerControlsEl) timerControlsEl.classList.add('hidden'); 
             } else { 
                 quizPool = shuffleArray(initialData.map(item => ({
                     ...item,
@@ -635,12 +327,11 @@
                 currentQuestionData = null;
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
-                 if(textModeOptionsEl) textModeOptionsEl.classList.remove('hidden'); // Show text mode options
-                 if(timerDisplayEl && isTimerEnabled) timerDisplayEl.classList.add('visible'); // Show timer display if enabled
-                 else if (timerDisplayEl) timerDisplayEl.classList.remove('visible'); // Hide if not enabled
+                duolingoToggleBtn.classList.remove('hidden');
                 submitButton.classList.remove('hidden'); 
                 submitButton.disabled = false;
-                // Timer will start on first input
+                if(timerControlsEl) timerControlsEl.classList.remove('hidden');
+                // Timer doesn't start here, but on first input for the question
             }
             updateScoreDisplay();
             loadQuestion();
@@ -656,48 +347,37 @@
             feedbackResultEl.textContent = '';
             feedbackCorrectAnswerEl.textContent = '';
             feedbackWorkTypeEl.textContent = '';
+
+            resetQuestionTimerState(); // Reset before loading new question
+
             if (currentMode === 'multiple-choice') {
-                if (mcCurrentIndex >= originalDataForMC.length) {
-                    showFinalMessage(); return;
-                }
+                // ... (MC load logic as before)
+            } else { // text-input mode
+                // ... (Text load logic as before)
+            }
+            // ... (Rest of loadQuestion as before, I'll omit it for brevity as it's unchanged from last correct version)
+            // (Just ensure the correct showing/hiding of elements for MC vs Text)
+            if (currentMode === 'multiple-choice') {
+                if (mcCurrentIndex >= originalDataForMC.length) { showFinalMessage(); return; }
                 currentQuestionData = originalDataForMC[mcCurrentIndex];
-                 if (!currentQuestionData) { 
-                    console.error("MC Mode: currentQuestionData is undefined at index " + mcCurrentIndex);
-                    showFinalMessage(); return;
-                }
+                if (!currentQuestionData) { console.error("MC Mode: currentQuestionData is undefined at index " + mcCurrentIndex); showFinalMessage(); return; }
                 authorQuestionEl.textContent = currentQuestionData.author;
                 answerOptionsEl.innerHTML = '';
                 const correctAnswer = currentQuestionData.work;
                 let options = [correctAnswer];
                 const wrongAnswers = initialData.map(item => item.work).filter(work => work !== correctAnswer);
                 let tempWrong = shuffleArray(wrongAnswers);
-                for (let i = 0; options.length < 4 && i < tempWrong.length; i++) {
-                    if (!options.includes(tempWrong[i])) options.push(tempWrong[i]);
-                }
+                for (let i = 0; options.length < 4 && i < tempWrong.length; i++) { if (!options.includes(tempWrong[i])) options.push(tempWrong[i]); }
                 while (options.length < 4) options.push(`Opțiune falsă ${options.length}`);
-
-                shuffleArray(options).forEach(option => {
-                    const button = document.createElement('button');
-                    button.textContent = option;
-                    button.classList.remove('fade-out');
-                    button.onclick = () => handleMultipleChoiceSelection(button, option === correctAnswer);
-                    answerOptionsEl.appendChild(button);
-                });
+                shuffleArray(options).forEach(option => { const button = document.createElement('button'); button.textContent = option; button.classList.remove('fade-out'); button.onclick = () => handleMultipleChoiceSelection(button, option === correctAnswer); answerOptionsEl.appendChild(button); });
                 submitButton.classList.add('hidden'); 
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
-            } else { // text-input mode
-                if (masteredItemCount === initialData.length && quizPool.every(item => item.isMastered)) {
-                    showFinalMessage(); return;
-                }
-                if (quizPool.length === 0) {
-                    showFinalMessage(); return;
-                }
+            } else { 
+                if (masteredItemCount === initialData.length && quizPool.every(item => item.isMastered)) { showFinalMessage(); return; }
+                if (quizPool.length === 0) { showFinalMessage(); return; }
                 currentQuestionData = quizPool[0];
-                if (!currentQuestionData) { 
-                    console.error("Text Mode: currentQuestionData is undefined from quizPool[0]");
-                    showFinalMessage(); return;
-                }
+                if (!currentQuestionData) { console.error("Text Mode: currentQuestionData is undefined from quizPool[0]"); showFinalMessage(); return; }
                 authorQuestionEl.textContent = currentQuestionData.author;
                 textAnswerInputEl.value = '';
                 textAnswerInputEl.disabled = false;
@@ -706,37 +386,24 @@
                 submitButton.disabled = false;
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
-                 // No timer start here, it starts on first input
             }
             nextButton.classList.add('hidden');
         }
+
+        // handleMultipleChoiceSelection remains the same
         function handleMultipleChoiceSelection(buttonEl, isCorrect) {
             if (submittedAnswer) return;
             submittedAnswer = true;
             mcQuestionsAnswered++;
             feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
-            Array.from(answerOptionsEl.children).forEach(btn => {
-                btn.disabled = true;
-                if (btn.textContent === currentQuestionData.work) btn.style.backgroundColor = '#28a745';
-                else if (btn === buttonEl && !isCorrect) btn.style.backgroundColor = '#dc3545';
-                setTimeout(() => btn.classList.add('fade-out'), 300);
-            });
-            if (isCorrect) {
-                mcScore++;
-                feedbackResultEl.textContent = "Corect!";
-                flipCardBackEl.classList.remove('incorrect'); 
-                flipCardBackEl.classList.add('correct');
-            } else {
-                feedbackResultEl.textContent = "Greșit!";
-                flipCardBackEl.classList.remove('correct'); 
-                flipCardBackEl.classList.add('incorrect');
-            }
-            feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentQuestionData.work}`;
-            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
-            flipCardEl.classList.add('flipped');
-            updateScoreDisplay();
-            nextButton.classList.remove('hidden');
+            Array.from(answerOptionsEl.children).forEach(btn => { btn.disabled = true; if (btn.textContent === currentQuestionData.work) btn.style.backgroundColor = '#28a745'; else if (btn === buttonEl && !isCorrect) btn.style.backgroundColor = '#dc3545'; setTimeout(() => btn.classList.add('fade-out'), 300); });
+            if (isCorrect) { mcScore++; feedbackResultEl.textContent = "Corect!"; flipCardBackEl.classList.remove('incorrect'); flipCardBackEl.classList.add('correct'); }
+            else { feedbackResultEl.textContent = "Greșit!"; flipCardBackEl.classList.remove('correct'); flipCardBackEl.classList.add('incorrect'); }
+            feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentQuestionData.work}`; feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
+            flipCardEl.classList.add('flipped'); updateScoreDisplay(); nextButton.classList.remove('hidden');
         }
+
+        // checkTextAnswer remains the same as the last correct version (with the background fix)
         function checkTextAnswer() {
             if (submittedAnswer) return;
             submittedAnswer = true;
@@ -758,68 +425,41 @@
                         itemInPool.isMastered = true;
                     }
                 }
-
                 const processedItem = quizPool.shift();
-                if (itemInPool.isMastered && !hintUsedThisTurn) { 
-                    quizPool.push(processedItem); 
-                } else if (hintUsedThisTurn && userAnswer === correctAnswer) {
-                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 2);
-                    if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; 
-                    quizPool.splice(reinsertIndex, 0, processedItem);
-                }
-                else { 
-                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 1);
-                    if (quizPool.length > 2 && reinsertIndex < 2) reinsertIndex = 2;
-                    if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; 
-                    quizPool.splice(reinsertIndex, 0, processedItem);
-                }
+                if (itemInPool.isMastered && !hintUsedThisTurn) { quizPool.push(processedItem); }
+                else if (hintUsedThisTurn && userAnswer === correctAnswer) { let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 2); if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; quizPool.splice(reinsertIndex, 0, processedItem); }
+                else { let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 1); if (quizPool.length > 2 && reinsertIndex < 2) reinsertIndex = 2; if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; quizPool.splice(reinsertIndex, 0, processedItem); }
             } else { 
                 feedbackResultEl.textContent = "Greșit!";
                 flipCardBackEl.classList.remove('correct'); 
                 flipCardBackEl.classList.add('incorrect');  
                 stats.totalIncorrectTextMode++;
                 const matchedOtherWork = initialData.find(item => normalizeString(item.work) === userAnswer);
-                if (matchedOtherWork && wrongWorkAuthorFeedbackEl) {
-                    wrongWorkAuthorFeedbackEl.textContent = `Atenție: "${textAnswerInputEl.value.trim()}" este o operă de ${matchedOtherWork.author}.`;
-                }
-                if (itemInPool.isMastered) { 
-                    itemInPool.isMastered = false;
-                }
+                if (matchedOtherWork && wrongWorkAuthorFeedbackEl) { wrongWorkAuthorFeedbackEl.textContent = `Atenție: "${textAnswerInputEl.value.trim()}" este o operă de ${matchedOtherWork.author}.`; }
+                if (itemInPool.isMastered) { itemInPool.isMastered = false; }
                 itemInPool.correctStreak = 0;
                 const incorrectItem = quizPool.shift();
-                if (duolingoModeActive) {
-                    let reinsertAtIndex = 1;
-                    if (quizPool.length > 2) reinsertAtIndex = Math.floor(Math.random() * 2) + 1;
-                    else if (quizPool.length > 0) reinsertAtIndex = 1;
-                    else reinsertAtIndex = 0;
-                    quizPool.splice(reinsertAtIndex, 0, incorrectItem);
-                } else {
-                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 3) + 1);
-                    if (quizPool.length > 3 && reinsertIndex < 2) reinsertIndex = 2;
-                     if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; 
-                    quizPool.splice(reinsertIndex, 0, incorrectItem);
-                }
+                if (duolingoModeActive) { let reinsertAtIndex = 1; if (quizPool.length > 2) reinsertAtIndex = Math.floor(Math.random() * 2) + 1; else if (quizPool.length > 0) reinsertAtIndex = 1; else reinsertAtIndex = 0; quizPool.splice(reinsertAtIndex, 0, incorrectItem); }
+                else { let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 3) + 1); if (quizPool.length > 3 && reinsertIndex < 2) reinsertIndex = 2; if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; quizPool.splice(reinsertIndex, 0, incorrectItem); }
             }
             masteredItemCount = quizPool.filter(item => item.isMastered).length; 
             saveStats(); 
             feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work} (Serie: ${itemInPool.correctStreak}${hintUsedThisTurn && userAnswer === correctAnswer ? ", Indiciu folosit pentru răspuns corect": (hintUsedThisTurn && userAnswer !== correctAnswer ? ", Indiciu folosit" : "")})`;
             feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
-            flipCardEl.classList.add('flipped');
-            updateScoreDisplay();
-            nextButton.classList.remove('hidden');
-            submitButton.classList.add('hidden'); 
+            flipCardEl.classList.add('flipped'); updateScoreDisplay(); nextButton.classList.remove('hidden'); submitButton.classList.add('hidden'); 
         }
+
+        // updateScoreDisplay remains the same
         function updateScoreDisplay() {
-            if (currentMode === 'multiple-choice') {
-                scoreEl.textContent = `Scor: ${mcScore} / ${mcQuestionsAnswered}`;
-            } else {
-                scoreEl.textContent = `Opere stăpânite: ${masteredItemCount} / ${initialData.length}`;
-            }
+            if (currentMode === 'multiple-choice') { scoreEl.textContent = `Scor: ${mcScore} / ${mcQuestionsAnswered}`; }
+            else { scoreEl.textContent = `Opere stăpânite: ${masteredItemCount} / ${initialData.length}`; }
         }
+
+        // showFinalMessage and displayFinalScoreMessage have the timer logic integrated
         function showFinalMessage() {
-            const finalTime = stopTimer(); // Stop the timer
-             let isNewTop3 = false;
-            if (currentMode === 'text-input' && masteredItemCount === initialData.length && isTimerEnabled) { // Only record time if all mastered AND timer was enabled
+            const finalTime = stopQuizTimer(); // Stop and get final time
+            let isNewTop3 = false;
+            if (currentMode === 'text-input' && masteredItemCount === initialData.length && finalTime !== null) {
                 stats.top3Times.push(finalTime);
                 stats.top3Times.sort((a, b) => a - b);
                 stats.top3Times = stats.top3Times.slice(0, 3);
@@ -834,8 +474,8 @@
             submitButton.classList.add('hidden');
             nextButton.classList.add('hidden');
             if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden'); 
-            if(timerToggleBtn) timerToggleBtn.classList.add('hidden'); // Hide timer toggle
-            if(textModeOptionsEl) textModeOptionsEl.classList.add('hidden'); // Hide text mode options container
+            if(timerControlsEl) timerControlsEl.classList.add('hidden');
+
             if (isNewTop3 && bravoMessageEl) {
                 bravoMessageEl.style.display = 'block';
                 setTimeout(() => {
@@ -852,8 +492,8 @@
                 finalMessageEl.textContent = `Quiz (Variante Multiple) terminat! Ai răspuns corect la ${mcScore} din ${originalDataForMC.length} întrebări.`;
             } else {
                 if (masteredItemCount === initialData.length) {
-                     scoreEl.textContent = `Toate ${initialData.length} operele stăpânite! Timp: ${formatTime(finalTime)}`;
-                     finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${initialData.length} opere în ${formatTime(finalTime)}!`;
+                     scoreEl.textContent = `Toate ${initialData.length} operele stăpânite! ${timerActivePreference && finalTime !== null ? 'Timp: ' + formatTime(finalTime) : ''}`;
+                     finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${initialData.length} opere ${timerActivePreference && finalTime !== null ? 'în ' + formatTime(finalTime) : ''}!`;
                 } else {
                     scoreEl.textContent = `Quiz terminat! Opere stăpânite: ${masteredItemCount} / ${initialData.length}`;
                     finalMessageEl.textContent = `Sesiune încheiată. Ai stăpânit ${masteredItemCount} din ${initialData.length} opere. Continuă să exersezi!`;
@@ -862,20 +502,17 @@
             finalMessageEl.classList.remove('hidden');
             const restartButton = document.createElement('button');
             restartButton.textContent = "Reîncepe Quiz";
-            restartButton.style.marginTop = "15px"; 
-            restartButton.style.padding = "8px 15px"; 
+            restartButton.style.marginTop = "15px";
+            restartButton.style.padding = "8px 15px";
             restartButton.style.backgroundColor = "#007bff";
             restartButton.style.color = "white";
             restartButton.style.border = "none";
             restartButton.style.borderRadius = "5px";
-            restartButton.onclick = () => {
-                finalMessageEl.innerHTML = '';
-                setupQuiz();
-            };
-            if (finalMessageEl.children.length === 0) { 
-                 finalMessageEl.appendChild(restartButton);
-            }
+            restartButton.onclick = () => { finalMessageEl.innerHTML = ''; setupQuiz(); };
+            if (finalMessageEl.children.length === 0) { finalMessageEl.appendChild(restartButton); }
          }
+
+        // Event Listeners
         modeRadios.forEach(radio => {
             radio.addEventListener('change', (event) => {
                 currentMode = event.target.value;
@@ -889,50 +526,45 @@
                 duolingoToggleBtn.classList.toggle('active', duolingoModeActive);
             });
         }
-        if(timerToggleBtn) { // Listener for the new timer toggle button
-             timerToggleBtn.addEventListener('click', () => {
-                 isTimerEnabled = !isTimerEnabled;
-                 timerToggleBtn.textContent = isTimerEnabled ? "Dezactivează Timer" : "Activează Timer";
-                 timerToggleBtn.classList.toggle('active', isTimerEnabled);
-                 // If timer is now enabled and we are in text mode, prepare for start (but don't start yet)
-                 if (currentMode === 'text-input' && isTimerEnabled) {
-                      if(timerDisplayEl) timerDisplayEl.classList.add('visible');
-                 } else { // If timer is disabled or not in text mode, stop and hide
-                      stopTimer();
-                      if(timerDisplayEl) timerDisplayEl.classList.remove('visible');
-                 }
-             });
+        if (toggleTimerButton) {
+             toggleTimerButton.addEventListener('click', () => {
+                timerActivePreference = !timerActivePreference;
+                saveSettings();
+                updateToggleTimerButtonVisuals();
+                if (!timerActivePreference) {
+                    stopQuizTimer(); // Stop if disabled
+                    if (timerDisplayEl) timerDisplayEl.textContent = "Timer dezactivat";
+                } else {
+                    // If quiz is in progress and timer was off, start it now
+                    // Or simply let it start on next input for a new question
+                    if (currentMode === 'text-input' && !submittedAnswer && startTime === null) {
+                        // If a question is loaded but timer not started, we might not auto-start it here
+                        // to avoid starting mid-thought. It will start on next input.
+                         if(timerDisplayEl) timerDisplayEl.textContent = `Timp: 0m 0s 000ms`;
+                    }
+                }
+            });
         }
         submitButton.addEventListener('click', () => {
-            if (currentMode === 'text-input') {
-                checkTextAnswer();
-            }
+            if (currentMode === 'text-input') { checkTextAnswer(); }
         });
         nextButton.addEventListener('click', () => {
-            if (currentMode === 'multiple-choice') {
-                 mcCurrentIndex++;
-            }
+            if (currentMode === 'multiple-choice') { mcCurrentIndex++; }
             loadQuestion();
         });
-        // Event listener for input in the text box
-        textAnswerInputEl.addEventListener('input', function() {
-             // Start timer only if in text mode, timer is enabled, and timer is not already running
-            if (currentMode === 'text-input' && isTimerEnabled && !timerRunning) {
-                 startTimer();
+        textAnswerInputEl.addEventListener('input', function() { // Changed from keypress to input
+            if (currentMode === 'text-input' && !timerStartedForQuestion && timerActivePreference) {
+                startQuizTimer();
             }
         });
-         // Event listener for Enter key press in the text box (already existing)
         textAnswerInputEl.addEventListener('keypress', function(event) {
             if (event.key === 'Enter' && currentMode === 'text-input' && !submitButton.disabled) {
                 checkTextAnswer();
             }
         });
-        // Keydown listener for 'h' (already existing)
         document.addEventListener('keydown', function(event) {
             if (currentMode === 'text-input' && !submittedAnswer && currentQuestionData && event.key.toLowerCase() === 'h') {
-                if (document.activeElement === textAnswerInputEl) {
-                    return; 
-                }
+                if (document.activeElement === textAnswerInputEl) { return; }
                 event.preventDefault(); 
                 if (!hintDisplayEl) return; 
                 hintUsedThisTurn = true;
@@ -940,45 +572,26 @@
                 const correctAnswerWork = currentQuestionData.work;
                 if (hintCharsShown <= correctAnswerWork.length) {
                     hintDisplayEl.textContent = "Indiciu: " + correctAnswerWork.substring(0, hintCharsShown) + "_".repeat(Math.max(0, correctAnswerWork.length - hintCharsShown));
-                    if(hintCharsShown === 1) { 
-                        stats.totalHintsUsed++;
-                        saveStats();
-                    }
+                    if(hintCharsShown === 1) { stats.totalHintsUsed++; saveStats(); }
                 } else {
                      hintDisplayEl.textContent = "Indiciu: " + correctAnswerWork; 
                 }
             }
         });
 
-        if (statsButton) { 
-            statsButton.addEventListener('click', displayStats);
-        }
-        if (closeStatsModalButton) {
-            closeStatsModalButton.addEventListener('click', () => {
-                if(statsModal) statsModal.style.display = 'none';
-            });
-        }
+        if (statsButton) { statsButton.addEventListener('click', displayStats); }
+        if (closeStatsModalButton) { closeStatsModalButton.addEventListener('click', () => { if(statsModal) statsModal.style.display = 'none'; }); }
         if (resetStatsButton) {
             resetStatsButton.addEventListener('click', () => {
                 if(confirm("Ești sigur că vrei să resetezi toate statisticile, inclusiv Top 3 timpi?")) {
-                    stats = {
-                        totalQuestionsAnsweredTextMode: 0,
-                        totalCorrectTextMode: 0,
-                        totalIncorrectTextMode: 0,
-                        totalHintsUsed: 0,
-                        top3Times: [] 
-                    };
-                    saveStats();
-                    displayStats(); 
+                    stats = { totalQuestionsAnsweredTextMode: 0, totalCorrectTextMode: 0, totalIncorrectTextMode: 0, totalHintsUsed: 0, top3Times: [] };
+                    saveStats(); displayStats(); 
                 }
             });
         }
+        window.addEventListener('click', (event) => { if (statsModal && event.target == statsModal) { statsModal.style.display = "none"; } });
 
-        window.addEventListener('click', (event) => { 
-            if (statsModal && event.target == statsModal) {
-                statsModal.style.display = "none";
-            }
-        });
+        loadSettings(); // Load timer preference
         loadStats(); 
         setupQuiz();
     </script>
