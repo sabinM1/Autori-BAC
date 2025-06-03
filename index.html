@@ -10,27 +10,27 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: center; /* Still center, but content might not fill height */
             min-height: 100vh;
             margin: 0;
             background-color: #f0f2f5;
             color: #333;
-            padding: 20px;
+            padding: 10px; /* Reduced body padding */
             box-sizing: border-box;
             position: relative; 
         }
 
         #stats-button {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 8px 12px;
+            top: 10px; /* Adjusted */
+            right: 10px; /* Adjusted */
+            padding: 6px 10px; /* Reduced */
             background-color: #6c757d;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 0.85em; /* Reduced */
             z-index: 100;
         }
         #stats-button:hover {
@@ -53,10 +53,10 @@
         .stats-modal-content {
             background-color: #fff;
             margin: auto; 
-            padding: 25px;
+            padding: 20px; /* Reduced */
             border: 1px solid #888;
             width: 80%;
-            max-width: 450px;
+            max-width: 400px; /* Slightly reduced max-width */
             border-radius: 8px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             text-align: left;
@@ -65,62 +65,69 @@
             text-align: center;
             color: #007bff;
             margin-top: 0;
+            margin-bottom: 15px; /* Reduced */
         }
         .stats-modal-content ul {
             list-style-type: none;
             padding: 0;
         }
         .stats-modal-content ul li {
-            margin-bottom: 8px;
-            font-size: 1.1em;
+            margin-bottom: 6px; /* Reduced */
+            font-size: 1em; /* Reduced */
         }
         .stats-modal-content button { 
             display: block;
-            margin: 20px auto 0;
-            padding: 10px 15px;
-            border:none;
-            border-radius: 5px;
-            cursor:pointer;
+            margin: 15px auto 0; /* Reduced */
+            padding: 8px 12px; /* Reduced */
         }
         .close-stats-button { 
              background-color: #dc3545;
              color: white;
+             border:none;
+             border-radius: 5px;
+             cursor:pointer;
         }
         #reset-stats-button { 
             background-color: #ffc107;
             color: #212529;
-            margin-top:10px; 
+            margin-top:8px; 
+            border:none;
+            border-radius: 5px;
+            cursor:pointer;
         }
 
 
         .container {
             background-color: #fff;
-            padding: 30px;
+            padding: 20px; /* Reduced */
             border-radius: 10px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             width: 100%;
-            max-width: 600px;
+            max-width: 550px; /* Slightly reduced */
             text-align: center;
-            margin-top: 50px; 
+            margin-top: 35px; /* Reduced */
         }
 
         h1 {
             color: #007bff;
-            margin-bottom: 20px;
+            margin-top: 0; /* Adjusted */
+            margin-bottom: 15px; /* Reduced */
+            font-size: 1.8em; /* Slightly reduced */
         }
 
         .mode-selector {
-            margin-bottom: 15px;
+            margin-bottom: 10px; /* Reduced */
             display: flex;
             justify-content: center;
-            gap: 15px;
+            gap: 10px; /* Reduced */
         }
         .mode-selector label {
             cursor: pointer;
-            padding: 8px 15px;
+            padding: 6px 12px; /* Reduced */
             border: 1px solid #ddd;
             border-radius: 5px;
             transition: background-color 0.3s, color 0.3s;
+            font-size: 0.9em; /* Slightly reduced */
         }
         .mode-selector input[type="radio"] {
             display: none;
@@ -132,8 +139,9 @@
         }
 
         #duolingo-mode-toggle {
-            margin-bottom: 20px;
-            padding: 8px 15px;
+            margin-bottom: 15px; /* Reduced */
+            padding: 6px 12px; /* Reduced */
+            font-size: 0.9em; /* Slightly reduced */
             border: 1px solid #6c757d;
             border-radius: 5px;
             cursor: pointer;
@@ -151,16 +159,16 @@
         .flip-card {
             background-color: transparent;
             width: 100%;
-            min-height: 220px;
+            min-height: 180px; /* Reduced */
             perspective: 1000px;
-            margin-bottom: 20px;
+            margin-bottom: 15px; /* Reduced */
         }
 
         .flip-card-inner {
             position: relative;
             width: 100%;
             height: 100%;
-            min-height: 220px;
+            min-height: 180px; /* Reduced */
             text-align: center;
             transition: transform 0.6s;
             transform-style: preserve-3d;
@@ -175,14 +183,14 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            min-height: 220px;
+            min-height: 180px; /* Reduced */
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            padding: 15px; /* Reduced */
             box-sizing: border-box;
             border: 1px solid #ddd;
             border-radius: 8px;
@@ -194,8 +202,9 @@
             color: #333; 
         }
         .flip-card-front p:first-child {
-            font-size: 0.9em;
+            font-size: 0.85em; /* Reduced */
             color: #6c757d;
+            margin-bottom: 5px; /* Added */
         }
 
 
@@ -214,22 +223,29 @@
         }
 
         #author-question {
-            font-size: 1.5em;
+            font-size: 1.3em; /* Reduced */
             font-weight: bold;
-            margin-bottom: 15px;
+            margin-bottom: 0; /* Adjusted */
+            margin-top: 0; /* Added */
+        }
+
+        #multiple-choice-area p, #text-input-area p {
+            margin-top: 5px; /* Reduced */
+            margin-bottom: 8px; /* Reduced */
+            font-size: 0.95em;
         }
 
         .answer-options button {
             display: block;
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
+            padding: 10px; /* Reduced */
+            margin: 6px 0; /* Reduced */
             background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.95em; /* Reduced */
             transition: background-color 0.2s, opacity 0.4s ease-out;
         }
         .answer-options button.fade-out {
@@ -247,29 +263,37 @@
 
 
         #text-answer-input {
-            width: calc(100% - 22px);
-            padding: 12px;
-            margin-bottom: 10px; 
+            width: calc(100% - 20px); /* Adjusted for padding */
+            padding: 10px; /* Reduced */
+            margin-bottom: 8px;  /* Reduced */
             border: 1px solid #ccc;
             border-radius: 5px;
-            font-size: 1em;
+            font-size: 0.95em; /* Reduced */
         }
         #hint-display { 
-            min-height: 20px; 
-            margin-bottom: 15px;
+            min-height: 18px; /* Reduced */
+            margin-bottom: 10px; /* Reduced */
             font-style: italic;
             color: #007bff;
-            font-size: 0.9em;
+            font-size: 0.85em; /* Reduced */
+        }
+        #wrong-work-author-feedback { /* New element for feedback */
+            min-height: 18px;
+            margin-top: -5px; /* Overlap slightly with hint display or adjust as needed */
+            margin-bottom: 10px;
+            font-style: italic;
+            color: #dc3545; /* Reddish color for warning */
+            font-size: 0.85em;
         }
 
 
         .action-buttons button {
-            padding: 12px 25px;
+            padding: 10px 20px; /* Reduced */
             margin: 5px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            font-size: 1em;
+            font-size: 0.95em; /* Reduced */
             transition: background-color 0.2s;
         }
 
@@ -294,32 +318,36 @@
         }
 
         #feedback-author-name-back {
-            font-size: 1.1em;
+            font-size: 1em; /* Reduced */
             font-weight: bold;
             color: #495057;
-            margin-bottom: 8px;
+            margin-bottom: 6px; /* Reduced */
         }
         #feedback-result {
-            font-size: 1.3em;
+            font-size: 1.1em; /* Reduced */
             font-weight: bold;
-            margin-bottom: 8px;
+            margin-bottom: 6px; /* Reduced */
         }
         #feedback-correct-answer {
-            font-size: 1.1em;
-            margin-bottom: 5px;
+            font-size: 1em; /* Reduced */
+            margin-bottom: 4px; /* Reduced */
         }
         #feedback-work-type {
-            font-size: 0.95em;
+            font-size: 0.9em; /* Reduced */
             font-style: italic;
-            margin-top: 5px;
+            margin-top: 4px; /* Reduced */
         }
 
         .hidden {
             display: none !important;
         }
          #score {
-            margin-top: 20px;
-            font-size: 1.2em;
+            margin-top: 15px; /* Reduced */
+            font-size: 1.1em; /* Reduced */
+        }
+        #final-message {
+            font-size: 1.3em !important; /* Reduced */
+            margin-top: 15px !important; /* Reduced */
         }
 
     </style>
@@ -330,9 +358,7 @@
     <div class="stats-modal" id="stats-modal">
         <div class="stats-modal-content">
             <h2>Statistici Quiz</h2>
-            <ul id="stats-list">
-                <!-- Stats will be populated by JS -->
-            </ul>
+            <ul id="stats-list"></ul>
             <button id="reset-stats-button">Resetează Statisticile</button>
             <button class="close-stats-button" id="close-stats-modal">Închide</button>
         </div>
@@ -344,7 +370,6 @@
         <div class="mode-selector">
             <input type="radio" id="mode-choice" name="quiz-mode" value="multiple-choice" checked>
             <label for="mode-choice">Variante Multiple</label>
-
             <input type="radio" id="mode-text" name="quiz-mode" value="text-input">
             <label for="mode-text">Scrie Răspunsul</label>
         </div>
@@ -368,15 +393,14 @@
 
         <div id="multiple-choice-area">
             <p>Alege opera corectă:</p>
-            <div class="answer-options" id="answer-options">
-                <!-- Options will be generated by JS -->
-            </div>
+            <div class="answer-options" id="answer-options"></div>
         </div>
 
         <div id="text-input-area" class="hidden">
             <p>Scrie titlul operei (fără diacritice, nu contează majusculele):</p>
             <input type="text" id="text-answer-input" placeholder="Titlul operei...">
             <div id="hint-display"></div> 
+            <div id="wrong-work-author-feedback"></div> <!-- New feedback element -->
         </div>
 
         <div class="action-buttons">
@@ -385,7 +409,7 @@
         </div>
 
         <div id="score">Opere stăpânite: 0 / 0</div>
-        <p id="final-message" class="hidden" style="font-size: 1.5em; margin-top: 20px;"></p>
+        <p id="final-message" class="hidden"></p>
 
     </div>
 
@@ -396,7 +420,7 @@
             { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii", type: "Poezie modernistă, expresionistă (interbelică)" },
             { author: "Mihail Sadoveanu", work: "Baltagul", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
             { author: "Marin Preda", work: "Moromeții", type: "Roman postbelic, realist, obiectiv, tradiționalist" },
-            { author: "George Călinescu", work: "Enigma Otiliei", type: "Roman interbelic, realist, obiectiv, modern, citadin" },
+            { author: "G. Călinescu", work: "Enigma Otiliei", type: "Roman interbelic, realist, obiectiv, modern, citadin" },
             { author: "Ioan Slavici", work: "Moara cu noroc", type: "Nuvelă realistă, obiectivă, psihologică" },
             { author: "Ion Luca Caragiale", work: "O scrisoare pierdută", type: "Comedie, text dramatic" },
             { author: "Ion Creangă", work: "Povestea lui Harap-Alb", type: "Basm cult" },
@@ -434,6 +458,7 @@
         const textInputAreaEl = document.getElementById('text-input-area');
         const duolingoToggleBtn = document.getElementById('duolingo-mode-toggle');
         const hintDisplayEl = document.getElementById('hint-display');
+        const wrongWorkAuthorFeedbackEl = document.getElementById('wrong-work-author-feedback'); // New element
         const flipCardEl = document.getElementById('flip-card');
         const flipCardInnerEl = document.getElementById('flip-card-inner');
         const flipCardBackEl = document.getElementById('flip-card-back');
@@ -467,9 +492,9 @@
                     stats = JSON.parse(savedStats);
                 } catch (e) {
                     console.error("Error parsing saved stats from localStorage. Resetting stats.", e);
-                    localStorage.removeItem('quizStats'); // Clear corrupted data
+                    localStorage.removeItem('quizStats'); 
                     stats = { totalQuestionsAnsweredTextMode: 0, totalCorrectTextMode: 0, totalIncorrectTextMode: 0, totalHintsUsed: 0 };
-                    saveStats(); // Save the fresh stats object
+                    saveStats(); 
                 }
             }
         }
@@ -514,6 +539,8 @@
             hintUsedThisTurn = false;
             hintCharsShown = 0;
             if(hintDisplayEl) hintDisplayEl.textContent = '';
+            if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = '';
+
 
             if (currentMode === 'multiple-choice') {
                 originalDataForMC = shuffleArray([...initialData]);
@@ -548,6 +575,7 @@
             hintUsedThisTurn = false;
             hintCharsShown = 0;
             if(hintDisplayEl) hintDisplayEl.textContent = '';
+            if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = '';
             feedbackAuthorNameBackEl.textContent = '';
             feedbackResultEl.textContent = '';
             feedbackCorrectAnswerEl.textContent = '';
@@ -555,14 +583,12 @@
 
             if (currentMode === 'multiple-choice') {
                 if (mcCurrentIndex >= originalDataForMC.length) {
-                    showFinalMessage();
-                    return;
+                    showFinalMessage(); return;
                 }
                 currentQuestionData = originalDataForMC[mcCurrentIndex];
                  if (!currentQuestionData) { 
                     console.error("MC Mode: currentQuestionData is undefined at index " + mcCurrentIndex);
-                    showFinalMessage(); 
-                    return;
+                    showFinalMessage(); return;
                 }
                 authorQuestionEl.textContent = currentQuestionData.author;
                 answerOptionsEl.innerHTML = '';
@@ -586,20 +612,17 @@
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
 
-            } else { // text-input mode
+            } else { 
                 if (masteredItemCount === initialData.length && quizPool.every(item => item.isMastered)) {
-                    showFinalMessage();
-                    return;
+                    showFinalMessage(); return;
                 }
                 if (quizPool.length === 0) {
-                    showFinalMessage(); 
-                    return;
+                    showFinalMessage(); return;
                 }
                 currentQuestionData = quizPool[0];
                 if (!currentQuestionData) { 
                     console.error("Text Mode: currentQuestionData is undefined from quizPool[0]");
-                    showFinalMessage();
-                    return;
+                    showFinalMessage(); return;
                 }
                 authorQuestionEl.textContent = currentQuestionData.author;
                 textAnswerInputEl.value = '';
@@ -629,11 +652,11 @@
             if (isCorrect) {
                 mcScore++;
                 feedbackResultEl.textContent = "Corect!";
-                flipCardBackEl.classList.remove('incorrect'); // Ensure only correct class
+                flipCardBackEl.classList.remove('incorrect'); 
                 flipCardBackEl.classList.add('correct');
             } else {
                 feedbackResultEl.textContent = "Greșit!";
-                flipCardBackEl.classList.remove('correct'); // Ensure only incorrect class
+                flipCardBackEl.classList.remove('correct'); 
                 flipCardBackEl.classList.add('incorrect');
             }
             feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentQuestionData.work}`;
@@ -650,6 +673,8 @@
 
             const userAnswer = normalizeString(textAnswerInputEl.value);
             const correctAnswer = normalizeString(currentQuestionData.work);
+            if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = ''; // Clear previous specific feedback
+
 
             textAnswerInputEl.disabled = true;
             feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
@@ -676,19 +701,25 @@
                     let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 2);
                     if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; 
                     quizPool.splice(reinsertIndex, 0, processedItem);
-                }
-                else { 
+                } else { 
                     let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 1);
                     if (quizPool.length > 2 && reinsertIndex < 2) reinsertIndex = 2;
                     if (quizPool.length > 0 && reinsertIndex > quizPool.length) reinsertIndex = quizPool.length; 
                     quizPool.splice(reinsertIndex, 0, processedItem);
                 }
 
-            } else { 
+            } else { // Incorrect answer
                 feedbackResultEl.textContent = "Greșit!";
                 flipCardBackEl.classList.remove('correct'); 
                 flipCardBackEl.classList.add('incorrect');  
                 stats.totalIncorrectTextMode++;
+
+                // Check if the incorrect answer is another valid work
+                const matchedOtherWork = initialData.find(item => normalizeString(item.work) === userAnswer);
+                if (matchedOtherWork && wrongWorkAuthorFeedbackEl) {
+                    wrongWorkAuthorFeedbackEl.textContent = `Atenție: "${textAnswerInputEl.value.trim()}" este o operă de ${matchedOtherWork.author}.`;
+                }
+
 
                 if (itemInPool.isMastered) { 
                     itemInPool.isMastered = false;
@@ -752,8 +783,8 @@
 
             const restartButton = document.createElement('button');
             restartButton.textContent = "Reîncepe Quiz";
-            restartButton.style.marginTop = "20px";
-            restartButton.style.padding = "10px 20px";
+            restartButton.style.marginTop = "15px"; // Reduced
+            restartButton.style.padding = "8px 15px"; // Reduced
             restartButton.style.backgroundColor = "#007bff";
             restartButton.style.color = "white";
             restartButton.style.border = "none";
@@ -802,10 +833,9 @@
         });
 
         document.addEventListener('keydown', function(event) {
-            // Doar daca modul text e activ, nu s-a submis raspunsul, avem o intrebare curenta SI focusul NU e pe input
             if (currentMode === 'text-input' && !submittedAnswer && currentQuestionData && event.key.toLowerCase() === 'h') {
                 if (document.activeElement === textAnswerInputEl) {
-                    return; // Permite scrierea lui 'h' in input
+                    return; 
                 }
                 event.preventDefault(); 
                 if (!hintDisplayEl) return; 
