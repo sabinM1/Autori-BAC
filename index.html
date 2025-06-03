@@ -10,7 +10,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: center; 
             min-height: 100vh;
             margin: 0;
             background-color: #f0f2f5;
@@ -73,14 +73,24 @@
             margin-bottom: 6px; 
             font-size: 1em; 
         }
-         .stats-modal-content .top3-list { /* Style for top 3 list */
+         .stats-modal-content .top3-list { 
             margin-top: 15px;
             padding-top: 10px;
             border-top: 1px solid #eee;
         }
+         .stats-modal-content .top3-list h3 {
+             margin-top: 0;
+             margin-bottom: 8px;
+             font-size: 1.1em;
+             color: #495057;
+         }
+         .stats-modal-content .top3-list ul {
+             list-style-type: decimal; /* Numbered list for top 3 */
+             padding-left: 20px;
+         }
          .stats-modal-content .top3-list li {
             font-weight: bold;
-            color: #28a745; /* Greenish for good times */
+            color: #28a745; 
          }
         .stats-modal-content button { 
             display: block;
@@ -140,10 +150,15 @@
             color: white;
             border-color: #007bff;
         }
-        #duolingo-mode-toggle {
-            margin-bottom: 15px; 
-            padding: 6px 12px; 
-            font-size: 0.9em; 
+        .text-mode-options { /* Container for duolingo and timer toggles */
+             margin-bottom: 15px;
+             display: flex;
+             justify-content: center;
+             gap: 10px;
+        }
+        .toggle-button { /* General style for toggle buttons */
+            padding: 6px 12px;
+            font-size: 0.9em;
             border: 1px solid #6c757d;
             border-radius: 5px;
             cursor: pointer;
@@ -151,17 +166,21 @@
             color: #212529;
             transition: background-color 0.3s, color 0.3s;
         }
-        #duolingo-mode-toggle.active {
+        .toggle-button.active {
             background-color: #17a2b8;
             color: white;
             border-color: #17a2b8;
         }
-        #timer-display { /* Style for timer */
+        #timer-display { 
             font-size: 1.1em;
             font-weight: bold;
             color: #007bff;
             margin-bottom: 15px;
-            min-height: 1.2em; /* Ensure space */
+            min-height: 1.2em; 
+            visibility: hidden; /* Use visibility to reserve space */
+        }
+        #timer-display.visible {
+            visibility: visible;
         }
         .flip-card {
             background-color: transparent;
@@ -241,7 +260,7 @@
             background-color: #007bff;
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 5曆px;
             cursor: pointer;
             font-size: 0.95em; 
             transition: background-color 0.2s, opacity 0.4s ease-out;
@@ -256,6 +275,9 @@
         .answer-options button:disabled:not(.fade-out) {
             background-color: #ccc;
             cursor: not-allowed;
+        }
+        #text-input-area .input-area { /* Container for input and feedback */
+            position: relative; /* For absolute positioning of potential helper text */
         }
         #text-answer-input {
             width: calc(100% - 20px); 
@@ -338,18 +360,18 @@
             font-size: 1.3em !important; 
             margin-top: 15px !important; 
         }
-        #bravo-message { /* Style for BRAVO message */
+        #bravo-message { 
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             font-size: 4em;
             font-weight: bold;
-            color: #28a745; /* Green */
+            color: #28a745; 
             text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-            z-index: 1000; /* Above everything else */
-            display: none; /* Hidden by default */
-            animation: fade-in-out 2s ease-out; /* Animation */
+            z-index: 1000; 
+            display: none; 
+            animation: fade-in-out 2s ease-out; 
         }
         @keyframes fade-in-out {
             0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
@@ -366,15 +388,13 @@
             <ul id="stats-list"></ul>
              <div class="top3-list">
                 <h3>Top 3 Timpi (Mod Text)</h3>
-                <ul id="top3-list">
-                    <!-- Top 3 times will be populated here -->
-                </ul>
+                <ul id="top3-list"></ul>
             </div>
             <button id="reset-stats-button">Resetează Statisticile</button>
             <button class="close-stats-button" id="close-stats-modal">Închide</button>
         </div>
     </div>
-    <div id="bravo-message">BRAVO!</div> <!-- BRAVO message element -->
+    <div id="bravo-message">BRAVO!</div> 
     <div class="container">
         <h1>Quiz Autori și Opere</h1>
         <div class="mode-selector">
@@ -383,8 +403,11 @@
             <input type="radio" id="mode-text" name="quiz-mode" value="text-input">
             <label for="mode-text">Scrie Răspunsul</label>
         </div>
-        <button id="duolingo-mode-toggle" class="hidden">Activează Modul Repetiție</button>
-         <div id="timer-display"></div> <!-- Timer display area -->
+        <div class="text-mode-options hidden"> <!-- New container for text mode toggles -->
+            <button id="duolingo-mode-toggle" class="toggle-button">Activează Modul Repetiție</button>
+            <button id="timer-toggle" class="toggle-button active">Activează Timer</button> <!-- New Timer Toggle -->
+        </div>
+         <div id="timer-display"></div> 
         <div class="flip-card" id="flip-card">
             <div class="flip-card-inner" id="flip-card-inner">
                 <div class="flip-card-front" id="flip-card-front">
@@ -405,7 +428,9 @@
         </div>
         <div id="text-input-area" class="hidden">
             <p>Scrie titlul operei (fără diacritice, nu contează majusculele):</p>
-            <input type="text" id="text-answer-input" placeholder="Titlul operei...">
+             <div class="input-area">
+                <input type="text" id="text-answer-input" placeholder="Titlul operei...">
+            </div>
             <div id="hint-display"></div> 
             <div id="wrong-work-author-feedback"></div> 
         </div>
@@ -435,7 +460,7 @@
             { author: "Marin Sorescu", work: "Iona", type: "Text dramatic postbelic, teatru modern, absurd" },
             { author: "Ion Pillat", work: "Aci sosi pe vremuri", type: "Poezie tradiționalistă interbelică" }
         ];
-        const MASTERY_THRESHOLD = 2; // Needs 2 consecutive correct answers without hint
+        const MASTERY_THRESHOLD = 2; 
         let originalDataForMC = [];
         let quizPool = [];
         let currentQuestionData = null;
@@ -445,18 +470,22 @@
         let mcQuestionsAnswered = 0;
         let mcCurrentIndex = 0;
         let submittedAnswer = false;
-        let duolingoModeActive = false;
+        let duolingoModeActive = true; // Default duolingo active
+        let isTimerEnabled = true; // Default timer enabled
         let hintUsedThisTurn = false;
         let hintCharsShown = 0;
         let startTime = null;
         let timerInterval = null;
+        let timerRunning = false; // New flag to track if timer is running
         // DOM Elements
         const authorQuestionEl = document.getElementById('author-question');
         const answerOptionsEl = document.getElementById('answer-options');
         const textAnswerInputEl = document.getElementById('text-answer-input');
         const multipleChoiceAreaEl = document.getElementById('multiple-choice-area');
         const textInputAreaEl = document.getElementById('text-input-area');
+        const textModeOptionsEl = document.querySelector('.text-mode-options'); // New container element
         const duolingoToggleBtn = document.getElementById('duolingo-mode-toggle');
+        const timerToggleBtn = document.getElementById('timer-toggle'); // New timer toggle button
         const hintDisplayEl = document.getElementById('hint-display');
         const wrongWorkAuthorFeedbackEl = document.getElementById('wrong-work-author-feedback');
         const flipCardEl = document.getElementById('flip-card');
@@ -475,30 +504,27 @@
         const statsButton = document.getElementById('stats-button');
         const statsModal = document.getElementById('stats-modal');
         const statsListEl = document.getElementById('stats-list');
-        const top3ListEl = document.getElementById('top3-list'); // New element for top 3
+        const top3ListEl = document.getElementById('top3-list'); 
         const closeStatsModalButton = document.getElementById('close-stats-modal');
         const resetStatsButton = document.getElementById('reset-stats-button');
-        const timerDisplayEl = document.getElementById('timer-display'); // New element for timer
-        const bravoMessageEl = document.getElementById('bravo-message'); // New element for BRAVO
+        const timerDisplayEl = document.getElementById('timer-display'); 
+        const bravoMessageEl = document.getElementById('bravo-message'); 
         let stats = {
             totalQuestionsAnsweredTextMode: 0,
             totalCorrectTextMode: 0,
             totalIncorrectTextMode: 0,
             totalHintsUsed: 0,
-            top3Times: [] // Array to store top 3 times
+            top3Times: [] 
         };
         function loadStats() {
             const savedStats = localStorage.getItem('quizStats');
             if (savedStats) {
                 try {
                     stats = JSON.parse(savedStats);
-                     // Ensure top3Times is an array if loaded from older stats
                     if (!Array.isArray(stats.top3Times)) {
                         stats.top3Times = [];
                     }
-                     // Sort top3Times just in case
                     stats.top3Times.sort((a, b) => a - b);
-                     // Keep only top 3
                     stats.top3Times = stats.top3Times.slice(0, 3);
                 } catch (e) {
                     console.error("Error parsing saved stats from localStorage. Resetting stats.", e);
@@ -522,7 +548,7 @@
                 <li>Răspunsuri greșite (mod text): ${stats.totalIncorrectTextMode}</li>
                 <li>Indicii folosite: ${stats.totalHintsUsed}</li>
             `;
-            top3ListEl.innerHTML = ''; // Clear previous top 3
+            top3ListEl.innerHTML = ''; 
             if (stats.top3Times.length === 0) {
                 top3ListEl.innerHTML = '<li>Niciun record înregistrat încă.</li>';
             } else {
@@ -538,19 +564,30 @@
             const minutes = Math.floor(totalSeconds / 60);
             const seconds = totalSeconds % 60;
             const ms = milliseconds % 1000;
-            return `${minutes}m ${seconds}s ${ms}ms`;
+            // Pad single digits with a leading zero
+             const pad = (num) => num.toString().padStart(2, '0');
+            return `${pad(minutes)}m ${pad(seconds)}s ${ms.toString().padStart(3, '0')}ms`;
         }
         function startTimer() {
-            startTime = Date.now();
-            timerInterval = setInterval(updateTimerDisplay, 50); // Update every 50ms
+            if (!timerRunning && isTimerEnabled) {
+                 startTime = Date.now();
+                 timerInterval = setInterval(updateTimerDisplay, 50); 
+                 timerRunning = true;
+                 if(timerDisplayEl) timerDisplayEl.classList.add('visible'); // Make timer visible
+            }
         }
         function stopTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            return Date.now() - startTime; // Return elapsed time
+            if (timerRunning) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+                timerRunning = false;
+                 if(timerDisplayEl) timerDisplayEl.classList.remove('visible'); // Hide timer
+                return Date.now() - startTime; 
+            }
+             return 0; // Return 0 if timer wasn't running
         }
         function updateTimerDisplay() {
-            if (!timerDisplayEl) return;
+            if (!timerDisplayEl || !startTime) return; // Check for startTime too
             const elapsedTime = Date.now() - startTime;
             timerDisplayEl.textContent = `Timp: ${formatTime(elapsedTime)}`;
         }
@@ -576,7 +613,8 @@
             hintCharsShown = 0;
             if(hintDisplayEl) hintDisplayEl.textContent = '';
             if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = '';
-            if(bravoMessageEl) bravoMessageEl.style.display = 'none'; // Hide BRAVO message
+            if(bravoMessageEl) bravoMessageEl.style.display = 'none'; 
+            stopTimer(); // Always stop timer at setup
             if (currentMode === 'multiple-choice') {
                 originalDataForMC = shuffleArray([...initialData]);
                 mcCurrentIndex = 0;
@@ -584,10 +622,9 @@
                 mcQuestionsAnswered = 0;
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
-                duolingoToggleBtn.classList.add('hidden');
+                if(textModeOptionsEl) textModeOptionsEl.classList.add('hidden'); // Hide text mode options
+                 if(timerDisplayEl) timerDisplayEl.classList.add('hidden'); // Hide timer display
                 submitButton.classList.add('hidden'); 
-                if(timerDisplayEl) timerDisplayEl.classList.add('hidden'); // Hide timer in MC mode
-                stopTimer(); // Ensure timer is stopped if switching from text mode
             } else { 
                 quizPool = shuffleArray(initialData.map(item => ({
                     ...item,
@@ -598,11 +635,12 @@
                 currentQuestionData = null;
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
-                duolingoToggleBtn.classList.remove('hidden');
+                 if(textModeOptionsEl) textModeOptionsEl.classList.remove('hidden'); // Show text mode options
+                 if(timerDisplayEl && isTimerEnabled) timerDisplayEl.classList.add('visible'); // Show timer display if enabled
+                 else if (timerDisplayEl) timerDisplayEl.classList.remove('visible'); // Hide if not enabled
                 submitButton.classList.remove('hidden'); 
                 submitButton.disabled = false;
-                 if(timerDisplayEl) timerDisplayEl.classList.remove('hidden'); // Show timer in Text mode
-                 startTimer(); // Start the timer
+                // Timer will start on first input
             }
             updateScoreDisplay();
             loadQuestion();
@@ -668,6 +706,7 @@
                 submitButton.disabled = false;
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
+                 // No timer start here, it starts on first input
             }
             nextButton.classList.add('hidden');
         }
@@ -778,20 +817,16 @@
             }
         }
         function showFinalMessage() {
-            // Stop the timer regardless of mode
-            const finalTime = stopTimer();
-            // Check for new Top 3 time ONLY IN TEXT MODE AND IF ALL MASTERED
-            let isNewTop3 = false;
-            if (currentMode === 'text-input' && masteredItemCount === initialData.length) {
-                // Add current time, sort, and keep top 3
+            const finalTime = stopTimer(); // Stop the timer
+             let isNewTop3 = false;
+            if (currentMode === 'text-input' && masteredItemCount === initialData.length && isTimerEnabled) { // Only record time if all mastered AND timer was enabled
                 stats.top3Times.push(finalTime);
                 stats.top3Times.sort((a, b) => a - b);
                 stats.top3Times = stats.top3Times.slice(0, 3);
-                // Check if the just added time is still in the top 3 after sorting and slicing
                 if (stats.top3Times.includes(finalTime)) {
                      isNewTop3 = true;
                 }
-                saveStats(); // Save updated top 3
+                saveStats(); 
             }
             flipCardEl.classList.add('hidden');
             multipleChoiceAreaEl.classList.add('hidden');
@@ -799,19 +834,19 @@
             submitButton.classList.add('hidden');
             nextButton.classList.add('hidden');
             if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden'); 
+            if(timerToggleBtn) timerToggleBtn.classList.add('hidden'); // Hide timer toggle
+            if(textModeOptionsEl) textModeOptionsEl.classList.add('hidden'); // Hide text mode options container
             if (isNewTop3 && bravoMessageEl) {
                 bravoMessageEl.style.display = 'block';
-                // Add a delay before showing the final message container
                 setTimeout(() => {
-                     if(bravoMessageEl) bravoMessageEl.style.display = 'none'; // Hide BRAVO
-                     displayFinalScoreMessage(finalTime); // Show final score message
-                }, 2000); // BRAVO stays for 2 seconds
+                     if(bravoMessageEl) bravoMessageEl.style.display = 'none'; 
+                     displayFinalScoreMessage(finalTime); 
+                }, 2000); 
             } else {
-                displayFinalScoreMessage(finalTime); // Show final score message immediately
+                displayFinalScoreMessage(finalTime); 
             }
         }
          function displayFinalScoreMessage(finalTime) {
-            // Reset score element content based on mode
             if (currentMode === 'multiple-choice') {
                 scoreEl.textContent = `Scor final: ${mcScore} / ${originalDataForMC.length}`;
                 finalMessageEl.textContent = `Quiz (Variante Multiple) terminat! Ai răspuns corect la ${mcScore} din ${originalDataForMC.length} întrebări.`;
@@ -827,8 +862,8 @@
             finalMessageEl.classList.remove('hidden');
             const restartButton = document.createElement('button');
             restartButton.textContent = "Reîncepe Quiz";
-            restartButton.style.marginTop = "15px";
-            restartButton.style.padding = "8px 15px";
+            restartButton.style.marginTop = "15px"; 
+            restartButton.style.padding = "8px 15px"; 
             restartButton.style.backgroundColor = "#007bff";
             restartButton.style.color = "white";
             restartButton.style.border = "none";
@@ -854,6 +889,20 @@
                 duolingoToggleBtn.classList.toggle('active', duolingoModeActive);
             });
         }
+        if(timerToggleBtn) { // Listener for the new timer toggle button
+             timerToggleBtn.addEventListener('click', () => {
+                 isTimerEnabled = !isTimerEnabled;
+                 timerToggleBtn.textContent = isTimerEnabled ? "Dezactivează Timer" : "Activează Timer";
+                 timerToggleBtn.classList.toggle('active', isTimerEnabled);
+                 // If timer is now enabled and we are in text mode, prepare for start (but don't start yet)
+                 if (currentMode === 'text-input' && isTimerEnabled) {
+                      if(timerDisplayEl) timerDisplayEl.classList.add('visible');
+                 } else { // If timer is disabled or not in text mode, stop and hide
+                      stopTimer();
+                      if(timerDisplayEl) timerDisplayEl.classList.remove('visible');
+                 }
+             });
+        }
         submitButton.addEventListener('click', () => {
             if (currentMode === 'text-input') {
                 checkTextAnswer();
@@ -865,13 +914,21 @@
             }
             loadQuestion();
         });
+        // Event listener for input in the text box
+        textAnswerInputEl.addEventListener('input', function() {
+             // Start timer only if in text mode, timer is enabled, and timer is not already running
+            if (currentMode === 'text-input' && isTimerEnabled && !timerRunning) {
+                 startTimer();
+            }
+        });
+         // Event listener for Enter key press in the text box (already existing)
         textAnswerInputEl.addEventListener('keypress', function(event) {
             if (event.key === 'Enter' && currentMode === 'text-input' && !submitButton.disabled) {
                 checkTextAnswer();
             }
         });
+        // Keydown listener for 'h' (already existing)
         document.addEventListener('keydown', function(event) {
-            // Allow 'h' if not in text mode OR if in text mode but the input is not focused
             if (currentMode === 'text-input' && !submittedAnswer && currentQuestionData && event.key.toLowerCase() === 'h') {
                 if (document.activeElement === textAnswerInputEl) {
                     return; 
@@ -909,7 +966,7 @@
                         totalCorrectTextMode: 0,
                         totalIncorrectTextMode: 0,
                         totalHintsUsed: 0,
-                        top3Times: [] // Reset top 3 as well
+                        top3Times: [] 
                     };
                     saveStats();
                     displayStats(); 
@@ -922,7 +979,7 @@
                 statsModal.style.display = "none";
             }
         });
-        loadStats(); // Load stats on page load
+        loadStats(); 
         setupQuiz();
     </script>
 </body>
