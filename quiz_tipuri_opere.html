@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Tipuri de Opere</title>
+    <style>
+        /* CSS-ul este aproape identic cu cel al paginii anterioare */
+        /* Poți copia CSS-ul de la quiz_autori_opere.html și să-l pui aici */
+        /* Singura modificare ar putea fi la textul placeholder pentru întrebare */
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;background-color:#f0f2f5;color:#333;padding:10px;box-sizing:border-box;position:relative}#stats-button{position:absolute;top:10px;right:10px;padding:6px 10px;background-color:#6c757d;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.85em;z-index:100}#stats-button:hover{background-color:#5a6268}.stats-modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgba(0,0,0,.5);align-items:center;justify-content:center}.stats-modal-content{background-color:#fff;margin:auto;padding:20px;border:1px solid #888;width:80%;max-width:400px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.2);text-align:left}.stats-modal-content h2{text-align:center;color:#007bff;margin-top:0;margin-bottom:15px}.stats-modal-content ul{list-style-type:none;padding:0}.stats-modal-content ul li{margin-bottom:6px;font-size:1em}.stats-modal-content .top3-list{margin-top:15px;padding-top:10px;border-top:1px solid #eee}.stats-modal-content .top3-list li{font-weight:700;color:#28a745}.stats-modal-content button{display:block;margin:15px auto 0;padding:8px 12px;border:none;border-radius:5px;cursor:pointer}.close-stats-button{background-color:#dc3545;color:#fff}#reset-stats-button{background-color:#ffc107;color:#212529;margin-top:8px}.container{background-color:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.1);width:100%;max-width:550px;text-align:center;margin-top:35px}h1{color:#007bff;margin-top:0;margin-bottom:15px;font-size:1.8em}#timer-controls{display:flex;align-items:center;justify-content:center;margin-bottom:10px;gap:10px}#timer-display{font-size:1.1em;font-weight:700;color:#007bff;min-height:1.2em}#toggle-timer-button{padding:5px 10px;font-size:.8em;background-color:#6c757d;color:#fff;border:none;border-radius:4px;cursor:pointer}#toggle-timer-button.active{background-color:#28a745}.mode-selector{margin-bottom:10px;display:flex;justify-content:center;gap:10px}.mode-selector label{cursor:pointer;padding:6px 12px;border:1px solid #ddd;border-radius:5px;transition:background-color .3s,color .3s;font-size:.9em}.mode-selector input[type=radio]{display:none}.mode-selector input[type=radio]:checked+label{background-color:#007bff;color:#fff;border-color:#007bff}#duolingo-mode-toggle{margin-bottom:15px;padding:6px 12px;font-size:.9em;border:1px solid #6c757d;border-radius:5px;cursor:pointer;background-color:#f8f9fa;color:#212529;transition:background-color .3s,color .3s}#duolingo-mode-toggle.active{background-color:#17a2b8;color:#fff;border-color:#17a2b8}.flip-card{background-color:transparent;width:100%;min-height:180px;perspective:1000px;margin-bottom:15px}.flip-card-inner{position:relative;width:100%;height:100%;min-height:180px;text-align:center;transition:transform .6s;transform-style:preserve-3d;border-radius:8px}.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;min-height:180px;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;box-sizing:border-box;border:1px solid #ddd;border-radius:8px;background-color:#f8f9fa}.flip-card-front{background-color:#e9ecef;color:#333}.flip-card-front p:first-child{font-size:.85em;color:#6c757d;margin-bottom:5px}.flip-card-back{background-color:#d1ecf1;color:#0c5460;transform:rotateY(180deg)}.flip-card-back.correct{background-color:#d4edda;color:#155724}.flip-card-back.incorrect{background-color:#f8d7da;color:#721c24}#question-element{ /* ID schimbat din author-question */ font-size:1.3em;font-weight:700;margin-bottom:0;margin-top:0}#multiple-choice-area p,#text-input-area p{margin-top:5px;margin-bottom:8px;font-size:.95em}.answer-options button{display:block;width:100%;padding:10px;margin:6px 0;background-color:#007bff;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.95em;transition:background-color .2s,opacity .4s ease-out}.answer-options button.fade-out{opacity:0;pointer-events:none}.answer-options button:hover{background-color:#0056b3}.answer-options button:disabled:not(.fade-out){background-color:#ccc;cursor:not-allowed}#text-answer-input{width:calc(100% - 20px);padding:10px;margin-bottom:8px;border:1px solid #ccc;border-radius:5px;font-size:.95em}#hint-display{min-height:18px;margin-bottom:10px;font-style:italic;color:#007bff;font-size:.85em}#wrong-work-author-feedback{min-height:18px;margin-top:-5px;margin-bottom:10px;font-style:italic;color:#dc3545;font-size:.85em}.action-buttons button{padding:10px 20px;margin:5px;border:none;border-radius:5px;cursor:pointer;font-size:.95em;transition:background-color .2s}#submit-answer{background-color:#28a745;color:#fff}#submit-answer:hover{background-color:#1e7e34}#submit-answer:disabled{background-color:#94dca4;cursor:not-allowed}#next-question{background-color:#ffc107;color:#212529}#next-question:hover{background-color:#e0a800}#feedback-question-back{ /* ID schimbat din feedback-author-name-back */ font-size:1em;font-weight:700;color:#495057;margin-bottom:6px}#feedback-result{font-size:1.1em;font-weight:700;margin-bottom:6px}#feedback-correct-answer{font-size:1em;margin-bottom:4px}#feedback-work-type{font-size:.9em;font-style:italic;margin-top:4px;display:none /* Tipul operei nu e relevant ca feedback direct aici, ci mai degrabă autorul */}.hidden{display:none!important}#score{margin-top:15px;font-size:1.1em}#final-message{font-size:1.3em!important;margin-top:15px!important}#bravo-message{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4em;font-weight:700;color:#28a745;text-shadow:2px 2px 5px rgba(0,0,0,.3);z-index:1000;display:none;animation:fade-in-out 2s ease-out}@keyframes fade-in-out{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.2)}}
+    </style>
+</head>
+<body>
+    <!-- Butonul de statistici și modalul pot fi refolosite, dar statisticile vor fi specifice acestui quiz -->
+    <button id="stats-button">Statistici Tipuri</button> 
+    <div class="stats-modal" id="stats-modal">
+        <div class="stats-modal-content">
+            <h2>Statistici Quiz Tipuri Opere</h2>
+            <ul id="stats-list"></ul>
+             <div class="top3-list">
+                <h3>Top 3 Timpi (Mod Text - Tipuri)</h3>
+                <ul id="top3-list"></ul>
+            </div>
+            <button id="reset-stats-button">Resetează Statisticile</button>
+            <button class="close-stats-button" id="close-stats-modal">Închide</button>
+        </div>
+    </div>
+    <div id="bravo-message">BRAVO!</div>
+
+    <div class="container">
+        <h1>Quiz Tipuri de Opere și Opere</h1> 
+        <div class="mode-selector">
+            <input type="radio" id="mode-choice" name="quiz-mode" value="multiple-choice" checked> 
+            <label for="mode-choice">Alege Opera</label>
+            <input type="radio" id="mode-text" name="quiz-mode" value="text-input"> 
+            <label for="mode-text">Scrie Opera</label>
+        </div>
+        <button id="duolingo-mode-toggle" class="hidden">Activează Modul Repetiție</button>
+
+        <div id="timer-controls" class="hidden"> 
+             <div id="timer-display">Timp: 0m 0s 000ms</div>
+             <button id="toggle-timer-button">Activează Timer</button>
+        </div>
+
+        <div class="flip-card" id="flip-card">
+            <div class="flip-card-inner" id="flip-card-inner">
+                <div class="flip-card-front" id="flip-card-front">
+                    <p>Tipul Operei:</p> <!-- Text schimbat -->
+                    <p id="question-element">Tipul Operei Aici</p> <!-- ID schimbat -->
+                </div>
+                <div class="flip-card-back" id="flip-card-back">
+                    <p id="feedback-question-back"></p> <!-- ID schimbat -->
+                    <p id="feedback-result"></p>
+                    <p id="feedback-correct-answer"></p>
+                    <!-- feedback-work-type nu mai este necesar aici sau poate afișa autorul operei corecte -->
+                    <p id="feedback-author-of-correct-work" style="font-size:0.9em; font-style:italic;"></p>
+                </div>
+            </div>
+        </div>
+        <div id="multiple-choice-area">
+            <p>Alege opera corectă pentru acest tip:</p> <!-- Text schimbat -->
+            <div class="answer-options" id="answer-options"></div>
+        </div>
+        <div id="text-input-area" class="hidden">
+            <p>Scrie o operă care se potrivește acestui tip:</p> <!-- Text schimbat -->
+            <input type="text" id="text-answer-input" placeholder="Numele operei...">
+            <div id="hint-display"></div> 
+            <div id="wrong-work-author-feedback"></div> 
+        </div>
+        <div class="action-buttons">
+            <button id="submit-answer">Verifică</button>
+            <button id="next-question" class="hidden">Următoarea Întrebare</button>
+        </div>
+        <div id="score">Tipuri Stăpânite: 0 / 0</div> <!-- Text schimbat -->
+        <p id="final-message" class="hidden"></p>
+    </div>
+
+    <script>
+        const initialData = [ 
+            // ... (datele tale complete aici)
+            { author: "Mihai Eminescu", work: "Floare Albastră", type: "Poezie romantică" },
+            { author: "Liviu Rebreanu", work: "Ion", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
+            { author: "Lucian Blaga", work: "Eu nu strivesc corola de minuni a lumii", type: "Poezie modernistă, expresionistă (interbelică)" },
+            { author: "Mihail Sadoveanu", work: "Baltagul", type: "Roman interbelic, realist, obiectiv, tradiționalist" },
+            { author: "Marin Preda", work: "Moromeții", type: "Roman postbelic, realist, obiectiv, tradiționalist" },
+            { author: "George Călinescu", work: "Enigma Otiliei", type: "Roman interbelic, realist, obiectiv, modern, citadin" },
+            { author: "Ioan Slavici", work: "Moara cu noroc", type: "Nuvelă realistă, obiectivă, psihologică" },
+            { author: "Ion Luca Caragiale", work: "O scrisoare pierdută", type: "Comedie, text dramatic" },
+            { author: "Ion Creangă", work: "Povestea lui Harap-Alb", type: "Basm cult" },
+            { author: "Ion Barbu", work: "Riga Crypto și Lapona Enigel", type: "Poezie modernistă (interbelică)" },
+            { author: "Tudor Arghezi", work: "Flori de mucigai", type: "Poezie modernistă (interbelică)" },
+            { author: "Camil Petrescu", work: "Ultima noapte de dragoste, întâia noapte de război", type: "Roman interbelic, subiectiv, modern, psihologic, al experienței" },
+            { author: "George Bacovia", work: "Plumb", type: "Poezie simbolistă" },
+            { author: "Nichita Stănescu", work: "Leoaică tânără, iubirea...", type: "Poezie postbelică neomodernistă" },
+            { author: "Marin Sorescu", work: "Iona", type: "Text dramatic postbelic, teatru modern, absurd" },
+            { author: "Ion Pillat", work: "Aci sosi pe vremuri", type: "Poezie tradiționalistă interbelică" }
+        ];
+
+        // MODIFICARE: Extragem tipurile unice de opere pentru a genera întrebări
+        const uniqueWorkTypes = [...new Set(initialData.map(item => item.type))];
+
+        const MASTERY_THRESHOLD = 2; 
+        let quizPool = []; // Va conține tipuri de opere, nu iteme complete
+        let currentQuestionData = null; // Va fi un tip de operă string
+        let currentCorrectWorks = []; // Array de opere corecte pentru tipul curent
+
+        let currentMode = 'multiple-choice'; // Default la alegere multiplă
+        let masteredItemCount = 0; // Se referă la tipuri stăpânite
+
+        let submittedAnswer = false;
+        let duolingoModeActive = false; // Poate fi setat true by default dacă dorești
+        let hintUsedThisTurn = false;
+        let hintCharsShown = 0;
+        let startTime = null;
+        let timerInterval = null;
+        let timerActivePreference = true; 
+        let timerStartedForQuestion = false; 
+
+        // DOM Elements (majoritatea refolosite, dar cu ID-uri actualizate unde e cazul)
+        const questionElementEl = document.getElementById('question-element'); // ID NOU
+        const answerOptionsEl = document.getElementById('answer-options');
+        const textAnswerInputEl = document.getElementById('text-answer-input');
+        const multipleChoiceAreaEl = document.getElementById('multiple-choice-area');
+        const textInputAreaEl = document.getElementById('text-input-area');
+        const duolingoToggleBtn = document.getElementById('duolingo-mode-toggle');
+        const hintDisplayEl = document.getElementById('hint-display');
+        const wrongWorkAuthorFeedbackEl = document.getElementById('wrong-work-author-feedback');
+        const flipCardEl = document.getElementById('flip-card');
+        const flipCardInnerEl = document.getElementById('flip-card-inner');
+        const flipCardBackEl = document.getElementById('flip-card-back');
+        const feedbackQuestionBackEl = document.getElementById('feedback-question-back'); // ID NOU
+        const feedbackResultEl = document.getElementById('feedback-result');
+        const feedbackCorrectAnswerEl = document.getElementById('feedback-correct-answer');
+        const feedbackAuthorOfCorrectWorkEl = document.getElementById('feedback-author-of-correct-work'); // NOU
+
+        const submitButton = document.getElementById('submit-answer');
+        const nextButton = document.getElementById('next-question');
+        const scoreEl = document.getElementById('score');
+        const finalMessageEl = document.getElementById('final-message');
+        const modeRadios = document.querySelectorAll('input[name="quiz-mode"]');
+
+        const statsButton = document.getElementById('stats-button');
+        const statsModal = document.getElementById('stats-modal');
+        const statsListEl = document.getElementById('stats-list');
+        const top3ListEl = document.getElementById('top3-list'); 
+        const closeStatsModalButton = document.getElementById('close-stats-modal');
+        const resetStatsButton = document.getElementById('reset-stats-button');
+        const timerControlsEl = document.getElementById('timer-controls'); 
+        const timerDisplayEl = document.getElementById('timer-display'); 
+        const toggleTimerButton = document.getElementById('toggle-timer-button'); 
+        const bravoMessageEl = document.getElementById('bravo-message'); 
+
+        let stats = { // Statistici specifice acestui quiz
+            totalTypesAnswered: 0,
+            totalTypesCorrect: 0,
+            totalTypesIncorrect: 0,
+            totalHintsUsed: 0,
+            top3Times: [] 
+        };
+
+        // --- Funcțiile JavaScript vor fi adaptate ---
+        // (loadSettings, saveSettings, updateToggleTimerButtonVisuals, loadStats, saveStats, displayStats, 
+        // formatTime, startQuizTimer, stopQuizTimer, resetQuestionTimerState, updateTimerDisplay,
+        // normalizeString, shuffleArray, setupQuiz, loadQuestion, handleMultipleChoiceSelection (adaptat), 
+        // checkTextAnswer (adaptat), updateScoreDisplay, showFinalMessage, displayFinalScoreMessage)
+
+        // ... (Copiază funcțiile JS adaptate din răspunsul anterior, cu modificările specifice pentru acest quiz)
+        // IMPORTANT: Textul "Copiază funcțiile JS adaptate..." este un placeholder.
+        // În fișierul real, va trebui să incluzi tot codul JS adaptat.
+
+        // Exemplu de adaptare pentru setupQuiz și loadQuestion:
+
+        function setupQuiz() {
+            submittedAnswer = false;
+            finalMessageEl.classList.add('hidden');
+            nextButton.classList.add('hidden');
+            flipCardEl.classList.remove('hidden');
+            hintUsedThisTurn = false;
+            hintCharsShown = 0;
+            if(hintDisplayEl) hintDisplayEl.textContent = '';
+            if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = '';
+            if(bravoMessageEl) bravoMessageEl.style.display = 'none'; 
+
+            stopQuizTimer(); 
+            resetQuestionTimerState(); 
+            updateDuolingoButtonVisuals();
+            updateToggleTimerButtonVisuals(); 
+
+            // Quiz pool va conține tipuri de opere pentru stăpânire
+            quizPool = shuffleArray(uniqueWorkTypes.map(type => ({
+                type: type, // Tipul operei este întrebarea
+                correctStreak: 0,
+                isMastered: false
+            })));
+            masteredItemCount = 0; // Se referă la tipuri stăpânite
+            currentQuestionData = null; // Va fi obiectul din quizPool {type: "...", ...}
+
+            if (currentMode === 'multiple-choice') {
+                multipleChoiceAreaEl.classList.remove('hidden');
+                textInputAreaEl.classList.add('hidden');
+                submitButton.classList.add('hidden'); 
+            } else { // text-input mode (implicit)
+                multipleChoiceAreaEl.classList.add('hidden');
+                textInputAreaEl.classList.remove('hidden');
+                submitButton.classList.remove('hidden'); 
+                submitButton.disabled = false;
+            }
+            // Afișare/Ascundere butoane Duolingo și Timer în funcție de modul text
+            const isTextMode = currentMode === 'text-input';
+            duolingoToggleBtn.classList.toggle('hidden', !isTextMode);
+            timerControlsEl.classList.toggle('hidden', !isTextMode);
+
+
+            updateScoreDisplay();
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            submittedAnswer = false;
+            flipCardEl.classList.remove('flipped');
+            hintUsedThisTurn = false;
+            hintCharsShown = 0;
+            if(hintDisplayEl) hintDisplayEl.textContent = '';
+            if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = '';
+            feedbackQuestionBackEl.textContent = '';
+            feedbackResultEl.textContent = '';
+            feedbackCorrectAnswerEl.textContent = '';
+            if(feedbackAuthorOfCorrectWorkEl) feedbackAuthorOfCorrectWorkEl.textContent = '';
+
+            resetQuestionTimerState(); 
+
+            if (masteredItemCount === uniqueWorkTypes.length && quizPool.every(item => item.isMastered)) {
+                showFinalMessage(); return;
+            }
+            if (quizPool.length === 0 && !(masteredItemCount === uniqueWorkTypes.length)) { 
+                // A rămas fără întrebări, dar nu toate sunt stăpânite - ar putea fi o problemă în logica de mastery
+                // Sau, dacă nu folosim duolingo mode și s-au epuizat, forțăm finalul
+                console.warn("Quiz pool empty, but not all types mastered. Ending quiz.");
+                showFinalMessage(); return;
+            }
+
+            // Selectează următorul tip de operă din quizPool (cel care nu e stăpânit încă)
+            let nextQuestionItem = quizPool.find(item => !item.isMastered);
+            if (!nextQuestionItem) { // Toate din pool sunt stăpânite, dar poate lista nu e goală (cazul rar)
+                 // Ar trebui să fie prins de condiția de sus, dar ca fallback
+                if (quizPool.length > 0) nextQuestionItem = quizPool[0]; 
+                else { showFinalMessage(); return; }
+            }
+            currentQuestionData = nextQuestionItem; // Acum currentQuestionData este {type: "...", correctStreak: ..., isMastered: ...}
+            questionElementEl.textContent = currentQuestionData.type;
+
+            // Găsește toate operele corecte pentru acest tip
+            currentCorrectWorks = initialData.filter(item => item.type === currentQuestionData.type);
+            if (currentCorrectWorks.length === 0) {
+                console.error("Nicio operă găsită pentru tipul: " + currentQuestionData.type);
+                // Poate sări la următoarea întrebare sau oprește quiz-ul
+                quizPool = quizPool.filter(item => item.type !== currentQuestionData.type); // Elimină tipul problematic
+                loadQuestion();
+                return;
+            }
+
+            if (currentMode === 'multiple-choice') {
+                answerOptionsEl.innerHTML = '';
+                let correctAnswerWork = currentCorrectWorks[Math.floor(Math.random() * currentCorrectWorks.length)]; // Alege o operă corectă aleatoriu
+                let options = [correctAnswerWork.work];
+
+                // Generează opțiuni greșite (alte opere din listă, care NU au acest tip)
+                const allOtherWorks = initialData.filter(item => item.type !== currentQuestionData.type).map(item => item.work);
+                let tempWrong = shuffleArray(allOtherWorks);
+
+                for (let i = 0; options.length < 4 && i < tempWrong.length; i++) {
+                    if (!options.includes(tempWrong[i])) {
+                        options.push(tempWrong[i]);
+                    }
+                }
+                while (options.length < 4 && initialData.length > options.length) { // Adaugă alte opere dacă nu sunt suficiente greșite distincte
+                    let randomWork = initialData[Math.floor(Math.random() * initialData.length)].work;
+                    if(!options.includes(randomWork)) options.push(randomWork);
+                }
+                 while (options.length < 4) options.push(`Opțiune invalidă ${options.length}`); // Fallback
+
+                shuffleArray(options).forEach(optionText => {
+                    const button = document.createElement('button');
+                    button.textContent = optionText;
+                    button.classList.remove('fade-out');
+                    button.onclick = () => handleMultipleChoiceSelection(button, optionText === correctAnswerWork.work, correctAnswerWork);
+                    answerOptionsEl.appendChild(button);
+                });
+                submitButton.classList.add('hidden'); 
+                multipleChoiceAreaEl.classList.remove('hidden');
+                textInputAreaEl.classList.add('hidden');
+            } else { 
+                textAnswerInputEl.value = '';
+                textAnswerInputEl.disabled = false;
+                textAnswerInputEl.focus();
+                submitButton.classList.remove('hidden'); 
+                submitButton.disabled = false;
+                multipleChoiceAreaEl.classList.add('hidden');
+                textInputAreaEl.classList.remove('hidden');
+            }
+            nextButton.classList.add('hidden');
+        }
+
+        function handleMultipleChoiceSelection(buttonEl, isCorrect, actualCorrectWork) {
+            if (submittedAnswer) return;
+            submittedAnswer = true;
+            stats.totalTypesAnswered++; // Statistici pentru tipuri
+
+            feedbackQuestionBackEl.textContent = `Tip: ${currentQuestionData.type}`;
+
+            Array.from(answerOptionsEl.children).forEach(btn => {
+                btn.disabled = true;
+                // Găsește opera corectă din currentCorrectWorks pentru a o evidenția (oricare ar fi ea)
+                if (currentCorrectWorks.some(cw => cw.work === btn.textContent)) {
+                     btn.style.backgroundColor = '#28a745'; // Evidențiază toate răspunsurile corecte posibile
+                }
+                if (btn === buttonEl && !isCorrect) { // Dacă cel selectat e greșit
+                     btn.style.backgroundColor = '#dc3545';
+                }
+                setTimeout(() => btn.classList.add('fade-out'), 300);
+            });
+
+            if (isCorrect) {
+                stats.totalTypesCorrect++;
+                feedbackResultEl.textContent = "Corect!";
+                flipCardBackEl.classList.remove('incorrect'); 
+                flipCardBackEl.classList.add('correct');
+                 if (!hintUsedThisTurn) { // Doar dacă nu s-a folosit hint pentru a ghici acest tip
+                    currentQuestionData.correctStreak++;
+                    if (!currentQuestionData.isMastered && currentQuestionData.correctStreak >= MASTERY_THRESHOLD) {
+                        currentQuestionData.isMastered = true;
+                    }
+                }
+            } else {
+                stats.totalTypesIncorrect++;
+                feedbackResultEl.textContent = "Greșit!";
+                flipCardBackEl.classList.remove('correct'); 
+                flipCardBackEl.classList.add('incorrect');
+                currentQuestionData.correctStreak = 0; // Reset streak pe greșeală
+                 if (currentQuestionData.isMastered) { // Dacă era stăpânit, nu mai e
+                    currentQuestionData.isMastered = false;
+                }
+            }
+
+            // Afișează *una* dintre operele corecte și autorul ei
+            const displayCorrectWork = actualCorrectWork || currentCorrectWorks[0];
+            feedbackCorrectAnswerEl.textContent = `O operă corectă: ${displayCorrectWork.work}`;
+            if(feedbackAuthorOfCorrectWorkEl) feedbackAuthorOfCorrectWorkEl.textContent = `(de ${displayCorrectWork.author})`;
+
+            // Repoziționarea tipului în quizPool (similar cu checkTextAnswer)
+            const processedItemIndex = quizPool.findIndex(item => item.type === currentQuestionData.type);
+            if (processedItemIndex > -1) {
+                const processedItem = quizPool.splice(processedItemIndex, 1)[0]; // Scoate itemul
+                 if (processedItem.isMastered && !hintUsedThisTurn && isCorrect) { 
+                    quizPool.push(processedItem); 
+                } else if (hintUsedThisTurn && isCorrect) {
+                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 2);
+                    quizPool.splice(reinsertIndex, 0, processedItem);
+                } else if (!isCorrect) { // Răspuns greșit
+                     if (duolingoModeActive) {
+                        let reinsertAtIndex = 1;
+                        if (quizPool.length > 2) reinsertAtIndex = Math.floor(Math.random() * 2) + 1;
+                        else if (quizPool.length > 0) reinsertAtIndex = 1;
+                        else reinsertAtIndex = 0;
+                        quizPool.splice(reinsertAtIndex, 0, processedItem);
+                    } else {
+                        let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 3) + 1);
+                        quizPool.splice(reinsertIndex, 0, processedItem);
+                    }
+                } else { // Corect, dar nu stăpânit încă sau hint folosit pe un nestăpânit
+                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 1);
+                    quizPool.splice(reinsertIndex, 0, processedItem);
+                }
+            }
+
+            masteredItemCount = quizPool.filter(item => item.isMastered).length;
+            saveStats(); 
+            flipCardEl.classList.add('flipped'); 
+            updateScoreDisplay(); 
+            nextButton.classList.remove('hidden');
+        }
+
+
+        function checkTextAnswer() {
+            if (submittedAnswer) return;
+            submittedAnswer = true;
+            stats.totalTypesAnswered++;
+
+            const userAnswerWork = normalizeString(textAnswerInputEl.value);
+            if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = ''; 
+
+            textAnswerInputEl.disabled = true;
+            feedbackQuestionBackEl.textContent = `Tip: ${currentQuestionData.type}`;
+
+            const isAnswerCorrectForType = currentCorrectWorks.some(item => normalizeString(item.work) === userAnswerWork);
+            const itemInPool = currentQuestionData; // currentQuestionData este {type:..., correctStreak:..., isMastered:...}
+
+            if (isAnswerCorrectForType) {
+                feedbackResultEl.textContent = "Corect!";
+                flipCardBackEl.classList.remove('incorrect'); 
+                flipCardBackEl.classList.add('correct');    
+                stats.totalTypesCorrect++;
+                if (!hintUsedThisTurn) { 
+                    itemInPool.correctStreak++;
+                    if (!itemInPool.isMastered && itemInPool.correctStreak >= MASTERY_THRESHOLD) {
+                        itemInPool.isMastered = true;
+                    }
+                }
+                const foundWork = currentCorrectWorks.find(item => normalizeString(item.work) === userAnswerWork);
+                feedbackCorrectAnswerEl.textContent = `Răspuns acceptat: ${foundWork.work}`;
+                 if(feedbackAuthorOfCorrectWorkEl) feedbackAuthorOfCorrectWorkEl.textContent = `(de ${foundWork.author})`;
+
+            } else { 
+                feedbackResultEl.textContent = "Greșit!";
+                flipCardBackEl.classList.remove('correct'); 
+                flipCardBackEl.classList.add('incorrect');  
+                stats.totalTypesIncorrect++;
+
+                const matchedOtherWork = initialData.find(item => normalizeString(item.work) === userAnswerWork);
+                if (matchedOtherWork && wrongWorkAuthorFeedbackEl) {
+                    wrongWorkAuthorFeedbackEl.textContent = `Atenție: "${textAnswerInputEl.value.trim()}" este o operă de ${matchedOtherWork.author}, dar nu se potrivește tipului cerut.`;
+                } else if (wrongWorkAuthorFeedbackEl) {
+                    wrongWorkAuthorFeedbackEl.textContent = `Această operă nu este în lista noastră sau nu se potrivește tipului.`;
+                }
+
+                if (itemInPool.isMastered) { 
+                    itemInPool.isMastered = false;
+                }
+                itemInPool.correctStreak = 0;
+                 // Afișează *una* dintre operele corecte ca exemplu
+                const displayCorrectWork = currentCorrectWorks[0];
+                feedbackCorrectAnswerEl.textContent = `Exemplu corect: ${displayCorrectWork.work}`;
+                if(feedbackAuthorOfCorrectWorkEl) feedbackAuthorOfCorrectWorkEl.textContent = `(de ${displayCorrectWork.author})`;
+            }
+
+             // Repoziționarea tipului în quizPool
+            const processedItemIndex = quizPool.findIndex(item => item.type === currentQuestionData.type);
+            if (processedItemIndex > -1) {
+                const processedItem = quizPool.splice(processedItemIndex, 1)[0];
+                 if (processedItem.isMastered && !hintUsedThisTurn && isAnswerCorrectForType) { 
+                    quizPool.push(processedItem); 
+                } else if (hintUsedThisTurn && isAnswerCorrectForType) {
+                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 2);
+                    quizPool.splice(reinsertIndex, 0, processedItem);
+                } else if (!isAnswerCorrectForType) { // Răspuns greșit
+                     if (duolingoModeActive) {
+                        let reinsertAtIndex = 1;
+                        if (quizPool.length > 2) reinsertAtIndex = Math.floor(Math.random() * 2) + 1;
+                        else if (quizPool.length > 0) reinsertAtIndex = 1;
+                        else reinsertAtIndex = 0;
+                        quizPool.splice(reinsertAtIndex, 0, processedItem);
+                    } else {
+                        let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 3) + 1);
+                        quizPool.splice(reinsertIndex, 0, processedItem);
+                    }
+                } else { // Corect, dar nu stăpânit încă sau hint folosit pe un nestăpânit
+                    let reinsertIndex = Math.min(quizPool.length, Math.floor(quizPool.length / 2) + 1);
+                    quizPool.splice(reinsertIndex, 0, processedItem);
+                }
+            }
+
+            masteredItemCount = quizPool.filter(item => item.isMastered).length; 
+            saveStats(); 
+
+            // Hint display in feedback
+            let hintFeedback = "";
+            if (hintUsedThisTurn) {
+                hintFeedback = isAnswerCorrectForType ? ", Indiciu folosit pentru răspuns corect" : ", Indiciu folosit";
+            }
+            // feedbackCorrectAnswerEl.textContent += ` (Serie tip: ${itemInPool.correctStreak}${hintFeedback})`; // Acest text se suprapune
+
+            flipCardEl.classList.add('flipped'); 
+            updateScoreDisplay(); 
+            nextButton.classList.remove('hidden'); 
+            submitButton.classList.add('hidden'); 
+        }
+
+        function updateScoreDisplay() { 
+            scoreEl.textContent = `Tipuri Stăpânite: ${masteredItemCount} / ${uniqueWorkTypes.length}`;
+        }
+        function showFinalMessage() { 
+            const finalTime = stopQuizTimer(); 
+            let isNewTop3 = false;
+            if (masteredItemCount === uniqueWorkTypes.length && finalTime !== null && timerActivePreference) { // Verifică tipuri stăpânite
+                stats.top3Times.push(finalTime);
+                stats.top3Times.sort((a, b) => a - b);
+                stats.top3Times = stats.top3Times.slice(0, 3);
+                if (stats.top3Times.includes(finalTime)) {
+                     isNewTop3 = true;
+                }
+                saveStats(); 
+            }
+            flipCardEl.classList.add('hidden');
+            multipleChoiceAreaEl.classList.add('hidden');
+            textInputAreaEl.classList.add('hidden');
+            submitButton.classList.add('hidden');
+            nextButton.classList.add('hidden');
+            if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden'); 
+            if(timerControlsEl) timerControlsEl.classList.add('hidden');
+            if (isNewTop3 && bravoMessageEl) {
+                bravoMessageEl.style.display = 'block';
+                setTimeout(() => {
+                     if(bravoMessageEl) bravoMessageEl.style.display = 'none'; 
+                     displayFinalScoreMessage(finalTime); 
+                }, 2000); 
+            } else {
+                displayFinalScoreMessage(finalTime); 
+            }
+        }
+         function displayFinalScoreMessage(finalTime) { 
+            if (masteredItemCount === uniqueWorkTypes.length) {
+                 scoreEl.textContent = `Toate ${uniqueWorkTypes.length} tipurile stăpânite! ${timerActivePreference && finalTime !== null ? 'Timp: ' + formatTime(finalTime) : ''}`;
+                 finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${uniqueWorkTypes.length} tipuri de opere ${timerActivePreference && finalTime !== null ? 'în ' + formatTime(finalTime) : ''}!`;
+            } else {
+                scoreEl.textContent = `Quiz Tipuri terminat! Stăpânite: ${masteredItemCount} / ${uniqueWorkTypes.length}`;
+                finalMessageEl.textContent = `Sesiune Tipuri încheiată. Ai stăpânit ${masteredItemCount} din ${uniqueWorkTypes.length} tipuri. Continuă să exersezi!`;
+            }
+            finalMessageEl.classList.remove('hidden');
+            const restartButton = document.createElement('button');
+            restartButton.textContent = "Reîncepe Quiz Tipuri";
+            restartButton.style.marginTop = "15px";
+            restartButton.style.padding = "8px 15px";
+            restartButton.style.backgroundColor = "#007bff";
+            restartButton.style.color = "white";
+            restartButton.style.border = "none";
+            restartButton.style.borderRadius = "5px";
+            restartButton.onclick = () => { finalMessageEl.innerHTML = ''; setupQuiz(); };
+            if (finalMessageEl.children.length === 0) { finalMessageEl.appendChild(restartButton); }
+         }
+
+        // Event Listeners (majoritatea pot fi refolosite, dar cu atenție la context)
+        modeRadios.forEach(radio => {
+            radio.addEventListener('change', (event) => {
+                currentMode = event.target.value;
+                setupQuiz(); 
+            });
+        });
+        // ... (restul event listeners adaptate similar cu pagina precedentă)
+        // Copiază și adaptează event listeners pentru:
+        // duolingoToggleBtn, toggleTimerButton, submitButton, nextButton, textAnswerInputEl (input și keypress),
+        // document (keydown pentru hint 'h'), statsButton, closeStatsModalButton, resetStatsButton, window (click pentru modal)
+
+        // Inițializare
+        // Asigură-te că funcțiile de inițializare sunt apelate
+        if(duolingoToggleBtn) { duolingoToggleBtn.addEventListener('click', () => { duolingoModeActive = !duolingoModeActive; updateDuolingoButtonVisuals(); });}
+        if (toggleTimerButton) { toggleTimerButton.addEventListener('click', () => { timerActivePreference = !timerActivePreference; saveSettings(); updateToggleTimerButtonVisuals(); if (!timerActivePreference) { stopQuizTimer(); if (timerDisplayEl) timerDisplayEl.textContent = "Timer dezactivat"; } else { if (currentMode === 'text-input' && !submittedAnswer && startTime === null) { if(timerDisplayEl) timerDisplayEl.textContent = `Timp: 0m 0s 000ms`; } else if (currentMode === 'text-input' && startTime !== null) { updateTimerDisplay();}}});}
+        submitButton.addEventListener('click', () => { if (currentMode === 'text-input') { checkTextAnswer(); }});
+        nextButton.addEventListener('click', () => { loadQuestion(); /* Logica de incrementare index MC e in handle...() */});
+        textAnswerInputEl.addEventListener('input', function() { if (currentMode === 'text-input' && !timerStartedForQuestion && timerActivePreference && !submittedAnswer) { startQuizTimer(); }});
+        textAnswerInputEl.addEventListener('keypress', function(event) { if (event.key === 'Enter' && currentMode === 'text-input' && !submitButton.disabled) { checkTextAnswer(); }});
+        document.addEventListener('keydown', function(event) { if (currentMode === 'text-input' && !submittedAnswer && currentQuestionData && event.key.toLowerCase() === 'h') { if (document.activeElement === textAnswerInputEl) { return; } event.preventDefault(); if (!hintDisplayEl) return; hintUsedThisTurn = true; hintCharsShown++; const firstCorrectWork = currentCorrectWorks[0].work; if (hintCharsShown <= firstCorrectWork.length) { hintDisplayEl.textContent = "Indiciu (operă): " + firstCorrectWork.substring(0, hintCharsShown) + "_".repeat(Math.max(0, firstCorrectWork.length - hintCharsShown)); if(hintCharsShown === 1) { stats.totalHintsUsed++; saveStats(); } } else { hintDisplayEl.textContent = "Indiciu (operă): " + firstCorrectWork; } } });
+        if (statsButton) { statsButton.addEventListener('click', displayStats); }
+        if (closeStatsModalButton) { closeStatsModalButton.addEventListener('click', () => { if(statsModal) statsModal.style.display = 'none'; }); }
+        if (resetStatsButton) { resetStatsButton.addEventListener('click', () => { if(confirm("Ești sigur că vrei să resetezi statisticile pentru Quizul de Tipuri?")) { stats = { totalTypesAnswered: 0, totalTypesCorrect: 0, totalTypesIncorrect: 0, totalHintsUsed: 0, top3Times: [] }; saveStats(); displayStats(); } }); }
+        window.addEventListener('click', (event) => { if (statsModal && event.target == statsModal) { statsModal.style.display = "none"; } });
+
+        loadSettings(); 
+        loadStats(); 
+        setupQuiz();
+    </script>
+</body>
+</html>
