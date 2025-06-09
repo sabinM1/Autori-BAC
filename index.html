@@ -6,7 +6,7 @@
     <title>Quiz Autori Opere</title>
     <style>
         /* CSS rămâne identic cu ultima versiune funcțională furnizată */
-        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;background-color:#f0f2f5;color:#333;padding:10px;box-sizing:border-box;position:relative}#stats-button{position:absolute;top:10px;right:10px;padding:6px 10px;background-color:#6c757d;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.85em;z-index:100}#stats-button:hover{background-color:#5a6268}.stats-modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgba(0,0,0,.5);align-items:center;justify-content:center}.stats-modal-content{background-color:#fff;margin:auto;padding:20px;border:1px solid #888;width:80%;max-width:400px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.2);text-align:left}.stats-modal-content h2{text-align:center;color:#007bff;margin-top:0;margin-bottom:15px}.stats-modal-content ul{list-style-type:none;padding:0}.stats-modal-content ul li{margin-bottom:6px;font-size:1em}.stats-modal-content .top3-list{margin-top:15px;padding-top:10px;border-top:1px solid #eee}.stats-modal-content .top3-list li{font-weight:700;color:#28a745}.stats-modal-content button{display:block;margin:15px auto 0;padding:8px 12px;border:none;border-radius:5px;cursor:pointer}.close-stats-button{background-color:#dc3545;color:#fff}#reset-stats-button{background-color:#ffc107;color:#212529;margin-top:8px}.container{background-color:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.1);width:100%;max-width:550px;text-align:center;margin-top:35px}h1{color:#007bff;margin-top:0;margin-bottom:15px;font-size:1.8em}#timer-controls{display:flex;align-items:center;justify-content:center;margin-bottom:10px;gap:10px}#timer-display{font-size:1.1em;font-weight:700;color:#007bff;min-height:1.2em}#toggle-timer-button{padding:5px 10px;font-size:.8em;background-color:#6c757d;color:#fff;border:none;border-radius:4px;cursor:pointer}#toggle-timer-button.active{background-color:#28a745}.mode-selector{margin-bottom:10px;display:flex;justify-content:center;gap:10px}.mode-selector label{cursor:pointer;padding:6px 12px;border:1px solid #ddd;border-radius:5px;transition:background-color .3s,color .3s;font-size:.9em}.mode-selector input[type=radio]{display:none}.mode-selector input[type=radio]:checked+label{background-color:#007bff;color:#fff;border-color:#007bff}#duolingo-mode-toggle{margin-bottom:15px;padding:6px 12px;font-size:.9em;border:1px solid #6c757d;border-radius:5px;cursor:pointer;background-color:#f8f9fa;color:#212529;transition:background-color .3s,color .3s}#duolingo-mode-toggle.active{background-color:#17a2b8;color:#fff;border-color:#17a2b8}.flip-card{background-color:transparent;width:100%;min-height:180px;perspective:1000px;margin-bottom:15px}.flip-card-inner{position:relative;width:100%;height:100%;min-height:180px;text-align:center;transition:transform .6s;transform-style:preserve-3d;border-radius:8px}.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;min-height:180px;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;box-sizing:border-box;border:1px solid #ddd;border-radius:8px;background-color:#f8f9fa}.flip-card-front{background-color:#e9ecef;color:#333}.flip-card-front p:first-child{font-size:.85em;color:#6c757d;margin-bottom:5px}.flip-card-back{background-color:#d1ecf1;color:#0c5460;transform:rotateY(180deg)}.flip-card-back.correct{background-color:#d4edda;color:#155724}.flip-card-back.incorrect{background-color:#f8d7da;color:#721c24}#author-question{font-size:1.3em;font-weight:700;margin-bottom:0;margin-top:0}#multiple-choice-area p,#text-input-area p{margin-top:5px;margin-bottom:8px;font-size:.95em}.answer-options button{display:block;width:100%;padding:10px;margin:6px 0;background-color:#007bff;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.95em;transition:background-color .2s,opacity .4s ease-out}.answer-options button.fade-out{opacity:0;pointer-events:none}.answer-options button:hover{background-color:#0056b3}.answer-options button:disabled:not(.fade-out){background-color:#ccc;cursor:not-allowed}#text-answer-input{width:calc(100% - 20px);padding:10px;margin-bottom:8px;border:1px solid #ccc;border-radius:5px;font-size:.95em}#hint-display{min-height:18px;margin-bottom:10px;font-style:italic;color:#007bff;font-size:.85em}#wrong-work-author-feedback{min-height:18px;margin-top:-5px;margin-bottom:10px;font-style:italic;color:#dc3545;font-size:.85em}.action-buttons button{padding:10px 20px;margin:5px;border:none;border-radius:5px;cursor:pointer;font-size:.95em;transition:background-color .2s}#submit-answer{background-color:#28a745;color:#fff}#submit-answer:hover{background-color:#1e7e34}#submit-answer:disabled{background-color:#94dca4;cursor:not-allowed}#next-question{background-color:#ffc107;color:#212529}#next-question:hover{background-color:#e0a800}#feedback-author-name-back{font-size:1em;font-weight:700;color:#495057;margin-bottom:6px}#feedback-result{font-size:1.1em;font-weight:700;margin-bottom:6px}#feedback-correct-answer{font-size:1em;margin-bottom:4px}#feedback-work-type{font-size:.9em;font-style:italic;margin-top:4px}.hidden{display:none!important}#score{margin-top:15px;font-size:1.1em}#final-message{font-size:1.3em!important;margin-top:15px!important}#bravo-message{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4em;font-weight:700;color:#28a745;text-shadow:2px 2px 5px rgba(0,0,0,.3);z-index:1000;display:none;animation:fade-in-out 2s ease-out}@keyframes fade-in-out{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.2)}}
+        body{font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;margin:0;background-color:#f0f2f5;color:#333;padding:10px;box-sizing:border-box;position:relative}#stats-button{position:absolute;top:10px;right:10px;padding:6px 10px;background-color:#6c757d;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.85em;z-index:100}#stats-button:hover{background-color:#5a6268}.stats-modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgba(0,0,0,.5);align-items:center;justify-content:center}.stats-modal-content{background-color:#fff;margin:auto;padding:20px;border:1px solid #888;width:80%;max-width:400px;border-radius:8px;box-shadow:0 4px 15px rgba(0,0,0,.2);text-align:left}.stats-modal-content h2{text-align:center;color:#007bff;margin-top:0;margin-bottom:15px}.stats-modal-content ul{list-style-type:none;padding:0}.stats-modal-content ul li{margin-bottom:6px;font-size:1em}.stats-modal-content .top3-list{margin-top:15px;padding-top:10px;border-top:1px solid #eee}.stats-modal-content .top3-list li{font-weight:700;color:#28a745}.stats-modal-content button{display:block;margin:15px auto 0;padding:8px 12px;border:none;border-radius:5px;cursor:pointer}.close-stats-button{background-color:#dc3545;color:#fff}#reset-stats-button{background-color:#ffc107;color:#212529;margin-top:8px}.container{background-color:#fff;padding:20px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,.1);width:100%;max-width:550px;text-align:center;margin-top:35px}h1{color:#007bff;margin-top:0;margin-bottom:15px;font-size:1.8em}#timer-controls{display:flex;align-items:center;justify-content:center;margin-bottom:10px;gap:10px}#timer-display{font-size:1.1em;font-weight:700;color:#007bff;min-height:1.2em}#toggle-timer-button{padding:5px 10px;font-size:.8em;background-color:#6c757d;color:#fff;border:none;border-radius:4px;cursor:pointer}#toggle-timer-button.active{background-color:#28a745}.mode-selector{margin-bottom:10px;display:flex;justify-content:center;gap:10px}.mode-selector label{cursor:pointer;padding:6px 12px;border:1px solid #ddd;border-radius:5px;transition:background-color .3s,color .3s;font-size:.9em}.mode-selector input[type=radio]{display:none}.mode-selector input[type=radio]:checked+label{background-color:#007bff;color:#fff;border-color:#007bff}#duolingo-mode-toggle{margin-bottom:15px;padding:6px 12px;font-size:.9em;border:1px solid #6c757d;border-radius:5px;cursor:pointer;background-color:#f8f9fa;color:#212529;transition:background-color .3s,color .3s}#duolingo-mode-toggle.active{background-color:#17a2b8;color:#fff;border-color:#17a2b8}.flip-card{background-color:transparent;width:100%;min-height:180px;perspective:1000px;margin-bottom:15px}.flip-card-inner{position:relative;width:100%;height:100%;min-height:180px;text-align:center;transition:transform .6s;transform-style:preserve-3d;border-radius:8px}.flip-card.flipped .flip-card-inner{transform:rotateY(180deg)}.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;min-height:180px;-webkit-backface-visibility:hidden;backface-visibility:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:15px;box-sizing:border-box;border:1px solid #ddd;border-radius:8px;background-color:#f8f9fa}.flip-card-front{background-color:#e9ecef;color:#333}#question-label{font-size:.85em;color:#6c757d;margin-bottom:5px}.flip-card-back{background-color:#d1ecf1;color:#0c5460;transform:rotateY(180deg)}.flip-card-back.correct{background-color:#d4edda;color:#155724}.flip-card-back.incorrect{background-color:#f8d7da;color:#721c24}#question-text{font-size:1.3em;font-weight:700;margin-bottom:0;margin-top:0}#multiple-choice-area p,#text-input-area p{margin-top:5px;margin-bottom:8px;font-size:.95em}.answer-options button{display:block;width:100%;padding:10px;margin:6px 0;background-color:#007bff;color:#fff;border:none;border-radius:5px;cursor:pointer;font-size:.95em;transition:background-color .2s,opacity .4s ease-out}.answer-options button.fade-out{opacity:0;pointer-events:none}.answer-options button:hover{background-color:#0056b3}.answer-options button:disabled:not(.fade-out){background-color:#ccc;cursor:not-allowed}#text-answer-input{width:calc(100% - 20px);padding:10px;margin-bottom:8px;border:1px solid #ccc;border-radius:5px;font-size:.95em}#hint-display{min-height:18px;margin-bottom:10px;font-style:italic;color:#007bff;font-size:.85em}#wrong-work-author-feedback{min-height:18px;margin-top:-5px;margin-bottom:10px;font-style:italic;color:#dc3545;font-size:.85em}.action-buttons button{padding:10px 20px;margin:5px;border:none;border-radius:5px;cursor:pointer;font-size:.95em;transition:background-color .2s}#submit-answer{background-color:#28a745;color:#fff}#submit-answer:hover{background-color:#1e7e34}#submit-answer:disabled{background-color:#94dca4;cursor:not-allowed}#next-question{background-color:#ffc107;color:#212529}#next-question:hover{background-color:#e0a800}#feedback-author-name-back{font-size:1em;font-weight:700;color:#495057;margin-bottom:6px}#feedback-result{font-size:1.1em;font-weight:700;margin-bottom:6px}#feedback-correct-answer{font-size:1em;margin-bottom:4px}#feedback-work-type{font-size:.9em;font-style:italic;margin-top:4px}.hidden{display:none!important}#score{margin-top:15px;font-size:1.1em}#final-message{font-size:1.3em!important;margin-top:15px!important}#bravo-message{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4em;font-weight:700;color:#28a745;text-shadow:2px 2px 5px rgba(0,0,0,.3);z-index:1000;display:none;animation:fade-in-out 2s ease-out}@keyframes fade-in-out{0%{opacity:0;transform:translate(-50%,-50%) scale(.8)}50%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(1.2)}}
     </style>
 </head>
 <body>
@@ -42,8 +42,10 @@
         <div class="flip-card" id="flip-card">
             <div class="flip-card-inner" id="flip-card-inner">
                 <div class="flip-card-front" id="flip-card-front">
-                    <p>Autor:</p>
-                    <p id="author-question">Nume Autor</p>
+                    <!-- START MODIFICARE: Aceste elemente se vor schimba dinamic -->
+                    <p id="question-label">Întrebare:</p>
+                    <p id="question-text">Text Întrebare</p>
+                    <!-- FINAL MODIFICARE -->
                 </div>
                 <div class="flip-card-back" id="flip-card-back">
                     <p id="feedback-author-name-back"></p>
@@ -54,12 +56,14 @@
             </div>
         </div>
         <div id="multiple-choice-area">
-            <p>Alege opera corectă:</p>
+            <p>Alege varianta corectă:</p>
             <div class="answer-options" id="answer-options"></div>
         </div>
         <div id="text-input-area" class="hidden">
-            <p>Scrie titlul operei (fără diacritice, nu contează majusculele):</p>
-            <input type="text" id="text-answer-input" placeholder="Titlul operei...">
+            <!-- START MODIFICARE: Textul se va schimba dinamic -->
+            <p id="text-input-label">Scrie răspunsul (fără diacritice, nu contează majusculele):</p>
+            <input type="text" id="text-answer-input" placeholder="Răspunsul tău...">
+            <!-- FINAL MODIFICARE -->
             <div id="hint-display"></div> 
             <div id="wrong-work-author-feedback"></div> 
         </div>
@@ -94,6 +98,11 @@
         let quizPool = [];
         let currentQuestionData = null;
         let currentMode = 'text-input'; 
+
+        // START MODIFICARE: Adăugăm variabila pentru a alterna tipul întrebării
+        let currentQuestionType = 'author-to-work'; 
+        // FINAL MODIFICARE
+
         let masteredItemCount = 0;
         let mcScore = 0;
         let mcQuestionsAnswered = 0;
@@ -108,7 +117,11 @@
         let timerStartedForQuestion = false; 
 
         // DOM Elements
-        const authorQuestionEl = document.getElementById('author-question');
+        // START MODIFICARE: Selectăm noile elemente dinamice
+        const questionLabelEl = document.getElementById('question-label');
+        const questionTextEl = document.getElementById('question-text');
+        const textInputLabelEl = document.getElementById('text-input-label');
+        // FINAL MODIFICARE
         const answerOptionsEl = document.getElementById('answer-options');
         const textAnswerInputEl = document.getElementById('text-answer-input');
         const multipleChoiceAreaEl = document.getElementById('multiple-choice-area');
@@ -128,7 +141,6 @@
         const scoreEl = document.getElementById('score');
         const finalMessageEl = document.getElementById('final-message');
         const modeRadios = document.querySelectorAll('input[name="quiz-mode"]');
-
         const statsButton = document.getElementById('stats-button');
         const statsModal = document.getElementById('stats-modal');
         const statsListEl = document.getElementById('stats-list');
@@ -148,125 +160,22 @@
             top3Times: [] 
         };
 
-        function updateDuolingoButtonVisuals() { 
-            if(duolingoToggleBtn) {
-                duolingoToggleBtn.textContent = duolingoModeActive ? "Dezactivează Modul Repetiție" : "Activează Modul Repetiție";
-                duolingoToggleBtn.classList.toggle('active', duolingoModeActive);
-            }
-        }
-
-        function loadSettings() {
-            const savedTimerPref = localStorage.getItem('quizTimerActivePreference');
-            if (savedTimerPref !== null) {
-                timerActivePreference = JSON.parse(savedTimerPref);
-            }
-            updateToggleTimerButtonVisuals();
-        }
-        function saveSettings() {
-            localStorage.setItem('quizTimerActivePreference', JSON.stringify(timerActivePreference));
-        }
-        function updateToggleTimerButtonVisuals() {
-            if (!toggleTimerButton || !timerDisplayEl || !timerControlsEl) return; // Add guard for timerControlsEl
-            if (currentMode === 'multiple-choice') { // Timer controls are hidden in MC mode
-                timerControlsEl.classList.add('hidden');
-                return;
-            }
-            timerControlsEl.classList.remove('hidden'); // Ensure visible for text mode
-
-            if (timerActivePreference) {
-                toggleTimerButton.textContent = "Dezactivează Timer";
-                toggleTimerButton.classList.add('active');
-                timerDisplayEl.style.visibility = 'visible';
-            } else {
-                toggleTimerButton.textContent = "Activează Timer";
-                toggleTimerButton.classList.remove('active');
-                timerDisplayEl.style.visibility = 'hidden';
-                stopQuizTimer(); 
-            }
-        }
-
-        function loadStats() {
-            const savedStats = localStorage.getItem('quizStats');
-            if (savedStats) {
-                try {
-                    stats = JSON.parse(savedStats);
-                    if (!Array.isArray(stats.top3Times)) {
-                        stats.top3Times = [];
-                    }
-                    stats.top3Times.sort((a, b) => a - b);
-                    stats.top3Times = stats.top3Times.slice(0, 3);
-                } catch (e) {
-                    console.error("Error parsing saved stats: ", e);
-                    localStorage.removeItem('quizStats'); 
-                    stats = { totalQuestionsAnsweredTextMode: 0, totalCorrectTextMode: 0, totalIncorrectTextMode: 0, totalHintsUsed: 0, top3Times: [] };
-                    saveStats(); 
-                }
-            }
-        }
-        function saveStats() {
-            localStorage.setItem('quizStats', JSON.stringify(stats));
-        }
-        function displayStats() {
-            if (!statsListEl || !statsModal || !top3ListEl) { 
-                console.error("Stats elements not found");
-                return;
-            }
-            statsListEl.innerHTML = `
-                <li>Total întrebări (mod text): ${stats.totalQuestionsAnsweredTextMode}</li>
-                <li>Răspunsuri corecte (mod text): ${stats.totalCorrectTextMode}</li>
-                <li>Răspunsuri greșite (mod text): ${stats.totalIncorrectTextMode}</li>
-                <li>Indicii folosite: ${stats.totalHintsUsed}</li>
-            `;
-            top3ListEl.innerHTML = ''; 
-            if (stats.top3Times.length === 0) {
-                top3ListEl.innerHTML = '<li>Niciun record înregistrat încă.</li>';
-            } else {
-                stats.top3Times.forEach((time, index) => {
-                    top3ListEl.innerHTML += `<li>#${index + 1}: ${formatTime(time)}</li>`;
-                });
-            }
-            statsModal.style.display = 'flex';
-        }
-
-        function formatTime(milliseconds) {
-            if (milliseconds === null || typeof milliseconds === 'undefined') return "N/A";
-            const totalSeconds = Math.floor(milliseconds / 1000);
-            const minutes = Math.floor(totalSeconds / 60);
-            const seconds = totalSeconds % 60;
-            const ms = String(milliseconds % 1000).padStart(3, '0');
-            return `${minutes}m ${seconds}s ${ms}ms`;
-        }
-        function startQuizTimer() { 
-            if (!timerActivePreference || startTime !== null) return; 
-            startTime = Date.now();
-            if (timerInterval) clearInterval(timerInterval); 
-            timerInterval = setInterval(updateTimerDisplay, 50); 
-            timerStartedForQuestion = true; 
-        }
-        function stopQuizTimer() { 
-            if (timerInterval) {
-                clearInterval(timerInterval);
-                timerInterval = null;
-            }
-            const elapsedTime = startTime ? Date.now() - startTime : null;
-            startTime = null; 
-            // timerStartedForQuestion = false; // Moved to resetQuestionTimerState
-            return elapsedTime;  
-        }
-        function resetQuestionTimerState() {
-            timerStartedForQuestion = false;
-            if (timerActivePreference && startTime === null && timerDisplayEl) {
-                 timerDisplayEl.textContent = `Timp: 0m 0s 000ms`;
-            }
-        }
-        function updateTimerDisplay() {
-            if (!timerDisplayEl || !timerActivePreference || startTime === null) return;
-            const elapsedTime = Date.now() - startTime;
-            timerDisplayEl.textContent = `Timp: ${formatTime(elapsedTime)}`;
-        }
-
+        // ... (restul funcțiilor: updateDuolingoButtonVisuals, loadSettings, saveSettings etc. rămân identice)
+        function updateDuolingoButtonVisuals() { if(duolingoToggleBtn) { duolingoToggleBtn.textContent = duolingoModeActive ? "Dezactivează Modul Repetiție" : "Activează Modul Repetiție"; duolingoToggleBtn.classList.toggle('active', duolingoModeActive); } }
+        function loadSettings() { const savedTimerPref = localStorage.getItem('quizTimerActivePreference'); if (savedTimerPref !== null) { timerActivePreference = JSON.parse(savedTimerPref); } updateToggleTimerButtonVisuals(); }
+        function saveSettings() { localStorage.setItem('quizTimerActivePreference', JSON.stringify(timerActivePreference)); }
+        function updateToggleTimerButtonVisuals() { if (!toggleTimerButton || !timerDisplayEl || !timerControlsEl) return; if (currentMode === 'multiple-choice') { timerControlsEl.classList.add('hidden'); return; } timerControlsEl.classList.remove('hidden'); if (timerActivePreference) { toggleTimerButton.textContent = "Dezactivează Timer"; toggleTimerButton.classList.add('active'); timerDisplayEl.style.visibility = 'visible'; } else { toggleTimerButton.textContent = "Activează Timer"; toggleTimerButton.classList.remove('active'); timerDisplayEl.style.visibility = 'hidden'; stopQuizTimer(); } }
+        function loadStats() { const savedStats = localStorage.getItem('quizStats'); if (savedStats) { try { stats = JSON.parse(savedStats); if (!Array.isArray(stats.top3Times)) { stats.top3Times = []; } stats.top3Times.sort((a, b) => a - b); stats.top3Times = stats.top3Times.slice(0, 3); } catch (e) { console.error("Error parsing saved stats: ", e); localStorage.removeItem('quizStats'); stats = { totalQuestionsAnsweredTextMode: 0, totalCorrectTextMode: 0, totalIncorrectTextMode: 0, totalHintsUsed: 0, top3Times: [] }; saveStats(); } } }
+        function saveStats() { localStorage.setItem('quizStats', JSON.stringify(stats)); }
+        function displayStats() { if (!statsListEl || !statsModal || !top3ListEl) { console.error("Stats elements not found"); return; } statsListEl.innerHTML = `<li>Total întrebări (mod text): ${stats.totalQuestionsAnsweredTextMode}</li><li>Răspunsuri corecte (mod text): ${stats.totalCorrectTextMode}</li><li>Răspunsuri greșite (mod text): ${stats.totalIncorrectTextMode}</li><li>Indicii folosite: ${stats.totalHintsUsed}</li>`; top3ListEl.innerHTML = ''; if (stats.top3Times.length === 0) { top3ListEl.innerHTML = '<li>Niciun record înregistrat încă.</li>'; } else { stats.top3Times.forEach((time, index) => { top3ListEl.innerHTML += `<li>#${index + 1}: ${formatTime(time)}</li>`; }); } statsModal.style.display = 'flex'; }
+        function formatTime(milliseconds) { if (milliseconds === null || typeof milliseconds === 'undefined') return "N/A"; const totalSeconds = Math.floor(milliseconds / 1000); const minutes = Math.floor(totalSeconds / 60); const seconds = totalSeconds % 60; const ms = String(milliseconds % 1000).padStart(3, '0'); return `${minutes}m ${seconds}s ${ms}ms`; }
+        function startQuizTimer() { if (!timerActivePreference || startTime !== null) return; startTime = Date.now(); if (timerInterval) clearInterval(timerInterval); timerInterval = setInterval(updateTimerDisplay, 50); timerStartedForQuestion = true; }
+        function stopQuizTimer() { if (timerInterval) { clearInterval(timerInterval); timerInterval = null; } const elapsedTime = startTime ? Date.now() - startTime : null; startTime = null; return elapsedTime; }
+        function resetQuestionTimerState() { timerStartedForQuestion = false; if (timerActivePreference && startTime === null && timerDisplayEl) { timerDisplayEl.textContent = `Timp: 0m 0s 000ms`; } }
+        function updateTimerDisplay() { if (!timerDisplayEl || !timerActivePreference || startTime === null) return; const elapsedTime = Date.now() - startTime; timerDisplayEl.textContent = `Timp: ${formatTime(elapsedTime)}`; }
         function normalizeString(str) { if (!str) return ""; return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^\w\s]/gi, '').replace(/\s+/g, ' ').trim(); }
         function shuffleArray(array) { let newArray = [...array]; for (let i = newArray.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1));[newArray[i], newArray[j]] = [newArray[j], newArray[i]]; } return newArray; }
+
 
         function setupQuiz() {
             submittedAnswer = false;
@@ -282,7 +191,11 @@
             stopQuizTimer(); 
             resetQuestionTimerState(); 
             updateDuolingoButtonVisuals();
-            updateToggleTimerButtonVisuals(); // Ensure timer toggle button state is correct
+            updateToggleTimerButtonVisuals(); 
+
+            // START MODIFICARE: Resetăm tipul întrebării la începutul quiz-ului
+            currentQuestionType = 'author-to-work';
+            // FINAL MODIFICARE
 
             if (currentMode === 'multiple-choice') {
                 originalDataForMC = shuffleArray([...initialData]);
@@ -291,7 +204,7 @@
                 mcQuestionsAnswered = 0;
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
-                if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden'); // Ensure hidden
+                if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden');
                 submitButton.classList.add('hidden'); 
                 if(timerControlsEl) timerControlsEl.classList.add('hidden'); 
             } else { 
@@ -300,7 +213,7 @@
                 currentQuestionData = null;
                 multipleChoiceAreaEl.classList.add('hidden');
                 textInputAreaEl.classList.remove('hidden');
-                if(duolingoToggleBtn) duolingoToggleBtn.classList.remove('hidden'); // Ensure shown
+                if(duolingoToggleBtn) duolingoToggleBtn.classList.remove('hidden');
                 submitButton.classList.remove('hidden'); 
                 submitButton.disabled = false;
                 if(timerControlsEl) timerControlsEl.classList.remove('hidden');
@@ -308,6 +221,7 @@
             updateScoreDisplay();
             loadQuestion();
         }
+
         function loadQuestion() { 
             submittedAnswer = false;
             flipCardEl.classList.remove('flipped');
@@ -320,28 +234,69 @@
             feedbackCorrectAnswerEl.textContent = '';
             feedbackWorkTypeEl.textContent = '';
             resetQuestionTimerState(); 
+
+            // START MODIFICARE: Alternăm tipul întrebării
+            if (currentMode === 'text-input') {
+                currentQuestionType = (currentQuestionType === 'author-to-work') ? 'work-to-author' : 'author-to-work';
+            } else {
+                 // Pentru modurile multiple, păstrăm o logică consistentă (aici autor -> operă)
+                 currentQuestionType = (Math.random() < 0.5) ? 'author-to-work' : 'work-to-author';
+            }
+            // FINAL MODIFICARE
+
             if (currentMode === 'multiple-choice') {
                 if (mcCurrentIndex >= originalDataForMC.length) { showFinalMessage(); return; }
                 currentQuestionData = originalDataForMC[mcCurrentIndex];
                 if (!currentQuestionData) { console.error("MC Mode: currentQuestionData is undefined at index " + mcCurrentIndex); showFinalMessage(); return; }
-                authorQuestionEl.textContent = currentQuestionData.author;
+
+                // START MODIFICARE: Afișăm întrebarea și opțiunile în funcție de tipul întrebării
+                let question, correctAnswer, wrongAnswerSource;
+                if (currentQuestionType === 'author-to-work') {
+                    questionLabelEl.textContent = "Autor:";
+                    questionTextEl.textContent = currentQuestionData.author;
+                    question = currentQuestionData.author;
+                    correctAnswer = currentQuestionData.work;
+                    wrongAnswerSource = initialData.map(item => item.work);
+                } else { // work-to-author
+                    questionLabelEl.textContent = "Operă:";
+                    questionTextEl.textContent = currentQuestionData.work;
+                    question = currentQuestionData.work;
+                    correctAnswer = currentQuestionData.author;
+                    wrongAnswerSource = initialData.map(item => item.author);
+                }
+
                 answerOptionsEl.innerHTML = '';
-                const correctAnswer = currentQuestionData.work;
                 let options = [correctAnswer];
-                const wrongAnswers = initialData.map(item => item.work).filter(work => work !== correctAnswer);
+                const wrongAnswers = wrongAnswerSource.filter(ans => ans !== correctAnswer);
                 let tempWrong = shuffleArray(wrongAnswers);
                 for (let i = 0; options.length < 4 && i < tempWrong.length; i++) { if (!options.includes(tempWrong[i])) options.push(tempWrong[i]); }
                 while (options.length < 4) options.push(`Opțiune falsă ${options.length}`);
                 shuffleArray(options).forEach(option => { const button = document.createElement('button'); button.textContent = option; button.classList.remove('fade-out'); button.onclick = () => handleMultipleChoiceSelection(button, option === correctAnswer); answerOptionsEl.appendChild(button); });
+                // FINAL MODIFICARE
+
                 submitButton.classList.add('hidden'); 
                 multipleChoiceAreaEl.classList.remove('hidden');
                 textInputAreaEl.classList.add('hidden');
-            } else { 
+            } else { // Mod Text
                 if (masteredItemCount === initialData.length && quizPool.every(item => item.isMastered)) { showFinalMessage(); return; }
                 if (quizPool.length === 0) { showFinalMessage(); return; }
                 currentQuestionData = quizPool[0];
                 if (!currentQuestionData) { console.error("Text Mode: currentQuestionData is undefined from quizPool[0]"); showFinalMessage(); return; }
-                authorQuestionEl.textContent = currentQuestionData.author;
+
+                // START MODIFICARE: Actualizăm interfața pentru modul text
+                if (currentQuestionType === 'author-to-work') {
+                    questionLabelEl.textContent = "Autor:";
+                    questionTextEl.textContent = currentQuestionData.author;
+                    textInputLabelEl.textContent = "Scrie titlul operei (fără diacritice, nu contează majusculele):";
+                    textAnswerInputEl.placeholder = "Titlul operei...";
+                } else { // work-to-author
+                    questionLabelEl.textContent = "Operă:";
+                    questionTextEl.textContent = currentQuestionData.work;
+                    textInputLabelEl.textContent = "Scrie numele autorului (fără diacritice, nu contează majusculele):";
+                    textAnswerInputEl.placeholder = "Numele autorului...";
+                }
+                // FINAL MODIFICARE
+
                 textAnswerInputEl.value = '';
                 textAnswerInputEl.disabled = false;
                 textAnswerInputEl.focus();
@@ -352,23 +307,37 @@
             }
             nextButton.classList.add('hidden');
         }
+
         function handleMultipleChoiceSelection(buttonEl, isCorrect) { 
             if (submittedAnswer) return;
             submittedAnswer = true;
             mcQuestionsAnswered++;
+
+            // START MODIFICARE: Adaptăm feedback-ul pentru ambele tipuri de întrebări
             feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
-            Array.from(answerOptionsEl.children).forEach(btn => { btn.disabled = true; if (btn.textContent === currentQuestionData.work) btn.style.backgroundColor = '#28a745'; else if (btn === buttonEl && !isCorrect) btn.style.backgroundColor = '#dc3545'; setTimeout(() => btn.classList.add('fade-out'), 300); });
+            const correctAnswerText = (currentQuestionType === 'author-to-work') ? currentQuestionData.work : currentQuestionData.author;
+            Array.from(answerOptionsEl.children).forEach(btn => { btn.disabled = true; if (btn.textContent === correctAnswerText) btn.style.backgroundColor = '#28a745'; else if (btn === buttonEl && !isCorrect) btn.style.backgroundColor = '#dc3545'; setTimeout(() => btn.classList.add('fade-out'), 300); });
             if (isCorrect) { mcScore++; feedbackResultEl.textContent = "Corect!"; flipCardBackEl.classList.remove('incorrect'); flipCardBackEl.classList.add('correct'); }
             else { feedbackResultEl.textContent = "Greșit!"; flipCardBackEl.classList.remove('correct'); flipCardBackEl.classList.add('incorrect'); }
-            feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentQuestionData.work}`; feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
+            feedbackCorrectAnswerEl.textContent = `Răspuns: ${currentQuestionData.work}`; 
+            // FINAL MODIFICARE
+
+            feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
             flipCardEl.classList.add('flipped'); updateScoreDisplay(); nextButton.classList.remove('hidden');
         }
+
         function checkTextAnswer() { 
             if (submittedAnswer) return;
             submittedAnswer = true;
             stats.totalQuestionsAnsweredTextMode++;
             const userAnswer = normalizeString(textAnswerInputEl.value);
-            const correctAnswer = normalizeString(currentQuestionData.work);
+
+            // START MODIFICARE: Verificăm răspunsul în funcție de tipul întrebării
+            const correctAnswer = (currentQuestionType === 'author-to-work')
+                ? normalizeString(currentQuestionData.work)
+                : normalizeString(currentQuestionData.author);
+            // FINAL MODIFICARE
+
             if(wrongWorkAuthorFeedbackEl) wrongWorkAuthorFeedbackEl.textContent = ''; 
             textAnswerInputEl.disabled = true;
             feedbackAuthorNameBackEl.textContent = `Autor: ${currentQuestionData.author}`;
@@ -393,8 +362,17 @@
                 flipCardBackEl.classList.remove('correct'); 
                 flipCardBackEl.classList.add('incorrect');  
                 stats.totalIncorrectTextMode++;
-                const matchedOtherWork = initialData.find(item => normalizeString(item.work) === userAnswer);
-                if (matchedOtherWork && wrongWorkAuthorFeedbackEl) { wrongWorkAuthorFeedbackEl.textContent = `Atenție: "${textAnswerInputEl.value.trim()}" este o operă de ${matchedOtherWork.author}.`; }
+
+                // START MODIFICARE: Oferim feedback specific dacă răspunsul greșit se potrivește cu altă operă/autor
+                if (currentQuestionType === 'author-to-work') {
+                    const matchedOtherWork = initialData.find(item => normalizeString(item.work) === userAnswer);
+                    if (matchedOtherWork && wrongWorkAuthorFeedbackEl) { wrongWorkAuthorFeedbackEl.textContent = `Atenție: "${textAnswerInputEl.value.trim()}" este o operă de ${matchedOtherWork.author}.`; }
+                } else { // work-to-author
+                    const matchedOtherAuthor = initialData.find(item => normalizeString(item.author) === userAnswer);
+                     if (matchedOtherAuthor && wrongWorkAuthorFeedbackEl) { wrongWorkAuthorFeedbackEl.textContent = `Atenție: ${textAnswerInputEl.value.trim()} a scris "${matchedOtherAuthor.work}".`; }
+                }
+                // FINAL MODIFICARE
+
                 if (itemInPool.isMastered) { itemInPool.isMastered = false; }
                 itemInPool.correctStreak = 0;
                 const incorrectItem = quizPool.shift();
@@ -403,108 +381,46 @@
             }
             masteredItemCount = quizPool.filter(item => item.isMastered).length; 
             saveStats(); 
-            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work} (Serie: ${itemInPool.correctStreak}${hintUsedThisTurn && userAnswer === correctAnswer ? ", Indiciu folosit pentru răspuns corect": (hintUsedThisTurn && userAnswer !== correctAnswer ? ", Indiciu folosit" : "")})`;
+            feedbackCorrectAnswerEl.textContent = `Răspuns corect: ${currentQuestionData.work}`;
             feedbackWorkTypeEl.textContent = `Tipul operei: ${currentQuestionData.type}`;
             flipCardEl.classList.add('flipped'); updateScoreDisplay(); nextButton.classList.remove('hidden'); submitButton.classList.add('hidden'); 
         }
-        function updateScoreDisplay() { 
-            if (currentMode === 'multiple-choice') { scoreEl.textContent = `Scor: ${mcScore} / ${mcQuestionsAnswered}`; }
-            else { scoreEl.textContent = `Opere stăpânite: ${masteredItemCount} / ${initialData.length}`; }
-        }
-        function showFinalMessage() { 
-            const finalTime = stopQuizTimer(); 
-            let isNewTop3 = false;
-            if (currentMode === 'text-input' && masteredItemCount === initialData.length && finalTime !== null && timerActivePreference) {
-                stats.top3Times.push(finalTime);
-                stats.top3Times.sort((a, b) => a - b);
-                stats.top3Times = stats.top3Times.slice(0, 3);
-                if (stats.top3Times.includes(finalTime)) {
-                     isNewTop3 = true;
-                }
-                saveStats(); 
-            }
-            flipCardEl.classList.add('hidden');
-            multipleChoiceAreaEl.classList.add('hidden');
-            textInputAreaEl.classList.add('hidden');
-            submitButton.classList.add('hidden');
-            nextButton.classList.add('hidden');
-            if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden'); 
-            if(timerControlsEl) timerControlsEl.classList.add('hidden');
-            if (isNewTop3 && bravoMessageEl) {
-                bravoMessageEl.style.display = 'block';
-                setTimeout(() => {
-                     if(bravoMessageEl) bravoMessageEl.style.display = 'none'; 
-                     displayFinalScoreMessage(finalTime); 
-                }, 2000); 
-            } else {
-                displayFinalScoreMessage(finalTime); 
-            }
-        }
-         function displayFinalScoreMessage(finalTime) { 
-            if (currentMode === 'multiple-choice') {
-                scoreEl.textContent = `Scor final: ${mcScore} / ${originalDataForMC.length}`;
-                finalMessageEl.textContent = `Quiz (Variante Multiple) terminat! Ai răspuns corect la ${mcScore} din ${originalDataForMC.length} întrebări.`;
-            } else {
-                if (masteredItemCount === initialData.length) {
-                     scoreEl.textContent = `Toate ${initialData.length} operele stăpânite! ${timerActivePreference && finalTime !== null ? 'Timp: ' + formatTime(finalTime) : ''}`;
-                     finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${initialData.length} opere ${timerActivePreference && finalTime !== null ? 'în ' + formatTime(finalTime) : ''}!`;
-                } else {
-                    scoreEl.textContent = `Quiz terminat! Opere stăpânite: ${masteredItemCount} / ${initialData.length}`;
-                    finalMessageEl.textContent = `Sesiune încheiată. Ai stăpânit ${masteredItemCount} din ${initialData.length} opere. Continuă să exersezi!`;
-                }
-            }
-            finalMessageEl.classList.remove('hidden');
-            const restartButton = document.createElement('button');
-            restartButton.textContent = "Reîncepe Quiz";
-            restartButton.style.marginTop = "15px";
-            restartButton.style.padding = "8px 15px";
-            restartButton.style.backgroundColor = "#007bff";
-            restartButton.style.color = "white";
-            restartButton.style.border = "none";
-            restartButton.style.borderRadius = "5px";
-            restartButton.onclick = () => { finalMessageEl.innerHTML = ''; setupQuiz(); };
-            if (finalMessageEl.children.length === 0) { finalMessageEl.appendChild(restartButton); }
-         }
+
+        // ... (restul funcțiilor: updateScoreDisplay, showFinalMessage, displayFinalScoreMessage rămân identice)
+        function updateScoreDisplay() { if (currentMode === 'multiple-choice') { scoreEl.textContent = `Scor: ${mcScore} / ${mcQuestionsAnswered}`; } else { scoreEl.textContent = `Opere stăpânite: ${masteredItemCount} / ${initialData.length}`; } }
+        function showFinalMessage() { const finalTime = stopQuizTimer(); let isNewTop3 = false; if (currentMode === 'text-input' && masteredItemCount === initialData.length && finalTime !== null && timerActivePreference) { stats.top3Times.push(finalTime); stats.top3Times.sort((a, b) => a - b); stats.top3Times = stats.top3Times.slice(0, 3); if (stats.top3Times.includes(finalTime)) { isNewTop3 = true; } saveStats(); } flipCardEl.classList.add('hidden'); multipleChoiceAreaEl.classList.add('hidden'); textInputAreaEl.classList.add('hidden'); submitButton.classList.add('hidden'); nextButton.classList.add('hidden'); if(duolingoToggleBtn) duolingoToggleBtn.classList.add('hidden'); if(timerControlsEl) timerControlsEl.classList.add('hidden'); if (isNewTop3 && bravoMessageEl) { bravoMessageEl.style.display = 'block'; setTimeout(() => { if(bravoMessageEl) bravoMessageEl.style.display = 'none'; displayFinalScoreMessage(finalTime); }, 2000); } else { displayFinalScoreMessage(finalTime); } }
+        function displayFinalScoreMessage(finalTime) { if (currentMode === 'multiple-choice') { scoreEl.textContent = `Scor final: ${mcScore} / ${originalDataForMC.length}`; finalMessageEl.textContent = `Quiz (Variante Multiple) terminat! Ai răspuns corect la ${mcScore} din ${originalDataForMC.length} întrebări.`; } else { if (masteredItemCount === initialData.length) { scoreEl.textContent = `Toate ${initialData.length} perechile stăpânite! ${timerActivePreference && finalTime !== null ? 'Timp: ' + formatTime(finalTime) : ''}`; finalMessageEl.textContent = `Felicitări! Ai stăpânit toate cele ${initialData.length} perechi ${timerActivePreference && finalTime !== null ? 'în ' + formatTime(finalTime) : ''}!`; } else { scoreEl.textContent = `Quiz terminat! Opere stăpânite: ${masteredItemCount} / ${initialData.length}`; finalMessageEl.textContent = `Sesiune încheiată. Ai stăpânit ${masteredItemCount} din ${initialData.length} perechi. Continuă să exersezi!`; } } finalMessageEl.classList.remove('hidden'); const restartButton = document.createElement('button'); restartButton.textContent = "Reîncepe Quiz"; restartButton.style.marginTop = "15px"; restartButton.style.padding = "8px 15px"; restartButton.style.backgroundColor = "#007bff"; restartButton.style.color = "white"; restartButton.style.border = "none"; restartButton.style.borderRadius = "5px"; restartButton.onclick = () => { finalMessageEl.innerHTML = ''; setupQuiz(); }; if (finalMessageEl.children.length === 0) { finalMessageEl.appendChild(restartButton); } }
 
         // Event Listeners
-        modeRadios.forEach(radio => {
-            radio.addEventListener('change', (event) => {
-                currentMode = event.target.value;
-                if (currentMode === 'text-input') {
-                    duolingoModeActive = true; 
-                }
-                setupQuiz(); 
-            });
-        });
-        if(duolingoToggleBtn) { 
-            duolingoToggleBtn.addEventListener('click', () => {
-                duolingoModeActive = !duolingoModeActive;
-                updateDuolingoButtonVisuals(); 
-            });
-        }
-        if (toggleTimerButton) { 
-            toggleTimerButton.addEventListener('click', () => {
-                timerActivePreference = !timerActivePreference;
-                saveSettings();
-                updateToggleTimerButtonVisuals();
-                if (!timerActivePreference) {
-                    stopQuizTimer(); 
-                    if (timerDisplayEl) timerDisplayEl.textContent = "Timer dezactivat";
-                } else {
-                    if (currentMode === 'text-input' && !submittedAnswer && startTime === null) {
-                         if(timerDisplayEl) timerDisplayEl.textContent = `Timp: 0m 0s 000ms`;
-                    } else if (currentMode === 'text-input' && startTime !== null) {
-                        // If timer was running and is re-enabled, just update display
-                        updateTimerDisplay();
-                    }
-                }
-            });
-        }
+        modeRadios.forEach(radio => { radio.addEventListener('change', (event) => { currentMode = event.target.value; if (currentMode === 'text-input') { duolingoModeActive = true; } setupQuiz(); }); });
+        if(duolingoToggleBtn) { duolingoToggleBtn.addEventListener('click', () => { duolingoModeActive = !duolingoModeActive; updateDuolingoButtonVisuals(); }); }
+        if (toggleTimerButton) { toggleTimerButton.addEventListener('click', () => { timerActivePreference = !timerActivePreference; saveSettings(); updateToggleTimerButtonVisuals(); if (!timerActivePreference) { stopQuizTimer(); if (timerDisplayEl) timerDisplayEl.textContent = "Timer dezactivat"; } else { if (currentMode === 'text-input' && !submittedAnswer && startTime === null) { if(timerDisplayEl) timerDisplayEl.textContent = `Timp: 0m 0s 000ms`; } else if (currentMode === 'text-input' && startTime !== null) { updateTimerDisplay(); } } }); }
         submitButton.addEventListener('click', () => { if (currentMode === 'text-input') { checkTextAnswer(); } });
         nextButton.addEventListener('click', () => { if (currentMode === 'multiple-choice') { mcCurrentIndex++; } loadQuestion(); });
         textAnswerInputEl.addEventListener('input', function() { if (currentMode === 'text-input' && !timerStartedForQuestion && timerActivePreference && !submittedAnswer) { startQuizTimer(); } });
         textAnswerInputEl.addEventListener('keypress', function(event) { if (event.key === 'Enter' && currentMode === 'text-input' && !submitButton.disabled) { checkTextAnswer(); } });
-        document.addEventListener('keydown', function(event) { if (currentMode === 'text-input' && !submittedAnswer && currentQuestionData && event.key.toLowerCase() === 'h') { if (document.activeElement === textAnswerInputEl) { return; } event.preventDefault(); if (!hintDisplayEl) return; hintUsedThisTurn = true; hintCharsShown++; const correctAnswerWork = currentQuestionData.work; if (hintCharsShown <= correctAnswerWork.length) { hintDisplayEl.textContent = "Indiciu: " + correctAnswerWork.substring(0, hintCharsShown) + "_".repeat(Math.max(0, correctAnswerWork.length - hintCharsShown)); if(hintCharsShown === 1) { stats.totalHintsUsed++; saveStats(); } } else { hintDisplayEl.textContent = "Indiciu: " + correctAnswerWork; } } });
+
+        // START MODIFICARE: Actualizăm logica pentru indiciu
+        document.addEventListener('keydown', function(event) { 
+            if (currentMode === 'text-input' && !submittedAnswer && currentQuestionData && event.key.toLowerCase() === 'h') { 
+                if (document.activeElement === textAnswerInputEl) { return; } 
+                event.preventDefault(); 
+                if (!hintDisplayEl) return; 
+                hintUsedThisTurn = true; 
+                hintCharsShown++; 
+
+                const correctAnswerText = (currentQuestionType === 'author-to-work') ? currentQuestionData.work : currentQuestionData.author;
+
+                if (hintCharsShown <= correctAnswerText.length) { 
+                    hintDisplayEl.textContent = "Indiciu: " + correctAnswerText.substring(0, hintCharsShown) + "_".repeat(Math.max(0, correctAnswerText.length - hintCharsShown)); 
+                    if(hintCharsShown === 1) { stats.totalHintsUsed++; saveStats(); } 
+                } else { 
+                    hintDisplayEl.textContent = "Indiciu: " + correctAnswerText; 
+                } 
+            } 
+        });
+        // FINAL MODIFICARE
+
         if (statsButton) { statsButton.addEventListener('click', displayStats); }
         if (closeStatsModalButton) { closeStatsModalButton.addEventListener('click', () => { if(statsModal) statsModal.style.display = 'none'; }); }
         if (resetStatsButton) { resetStatsButton.addEventListener('click', () => { if(confirm("Ești sigur că vrei să resetezi toate statisticile, inclusiv Top 3 timpi?")) { stats = { totalQuestionsAnsweredTextMode: 0, totalCorrectTextMode: 0, totalIncorrectTextMode: 0, totalHintsUsed: 0, top3Times: [] }; saveStats(); displayStats(); } }); }
